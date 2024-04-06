@@ -1,9 +1,7 @@
-
 import streamlit as st
 import pandas as pd
 import yfinance as yf
 from datetime import datetime, timedelta
-from openpyxl import load_workbook
 
 # Download Yahoo Finance Data (improved error handling)
 ticker = 'CNY=X'  # Double-check the ticker symbol
@@ -22,16 +20,7 @@ except Exception as e:  # Handle different exceptions
 
 # Read Data from Excel
 nombre_archivo_excel = 'futuros litio.xlsx'
-book = load_workbook(nombre_archivo_excel)
-hoja_market = book['Market']
-
-data = []
-for row in hoja_market.iter_rows(values_only=True):
-    data.append(row)
-
-column_headers = data[0]
-df_market = pd.DataFrame(data[1:], columns=column_headers)
-book.close()
+df_market = pd.read_excel(nombre_archivo_excel, sheet_name='Market')
 
 # Data Cleaning and Transformation (corrected renaming)
 df_market.rename(columns={'Conversion en Notas': 'Fecha'}, inplace=True)
