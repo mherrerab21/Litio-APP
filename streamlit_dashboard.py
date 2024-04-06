@@ -21,7 +21,7 @@ except Exception as e:  # Handle different exceptions
     st.error("Error downloading data for {}: {}".format(ticker, e))
 
 # Read Data from Excel
-nombre_archivo_excel = r'C:\Users\maxhe\Scrappers\Litio\futuros litio.xlsx'
+nombre_archivo_excel = 'futuros litio.xlsx'
 book = load_workbook(nombre_archivo_excel)
 hoja_market = book['Market']
 
