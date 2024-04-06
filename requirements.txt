@@ -1,0 +1,7 @@
+streamlit>=0.78.0
+yfinance
+pandas
+plotly
+matplotlib
+openpyxl
+datetime
