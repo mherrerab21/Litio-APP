@@ -91,16 +91,16 @@ if tipo_cambio_USD_CNY is not None:
 # Reemplazar los valores NaN por 0
 df_market = df_market.fillna(0)
 
-# Calcular las variaciones entre el último y penúltimo dato para cada columna
-variacion = df_market.diff().iloc[-1]
+# Calcular las variaciones porcentuales entre el último y penúltimo dato para cada columna
+variacion_porcentual = ((df_market.iloc[-1] - df_market.iloc[-2]) / df_market.iloc[-2]) * 100
 
 # Mostrar DataFrame actualizado
 st.write("Precios de Contrato:")
 st.write(df_market)
 
-# Mostrar tabla de variaciones junto con los precios de contrato
-st.write("Variaciones entre el último y penúltimo dato:")
-st.write(variacion)
+# Mostrar tabla de variaciones porcentuales junto con los precios de contrato
+st.write("Variaciones porcentuales entre el último y penúltimo dato:")
+st.write(variacion_porcentual)
 
 # Graficar los precios de contrato seleccionados a lo largo del tiempo
 st.title("Precios de Contrato a lo largo del Tiempo")
@@ -110,3 +110,4 @@ if selected_prices:
     chart.pyplot().invert_xaxis()  # Invertir el eje x del gráfico
 else:
     st.warning("Por favor selecciona al menos un precio de contrato.")
+
