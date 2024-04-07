@@ -4,6 +4,35 @@ import yfinance as yf
 import plotly.express as px
 from datetime import datetime, timedelta
 
+# Establecer el título de la página
+st.title("Dashboard de Precios de Contrato de Litio")
+st.markdown("---")
+
+# Cambiar el color de fondo de la página a un verde militar
+st.markdown(
+    """
+    <style>
+    body {
+        background-color: #4B5320;
+        color: white;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
+# Establecer todos los títulos con el mismo tamaño
+st.markdown(
+    """
+    <style>
+    .css-1xjvdi2 {
+        font-size: 28px !important;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
 # Download Yahoo Finance Data (improved error handling)
 ticker = 'CNY=X'  # Double-check the ticker symbol
 today = datetime.today()
@@ -96,21 +125,23 @@ df_market = df_market.fillna(0)
 variacion_porcentual = (df_market.diff().iloc[-1] / df_market.iloc[-2]) * 100
 
 # Mostrar DataFrame actualizado
-st.write("Precios de Contrato:")
+st.markdown("## Precios de Contrato:")
 st.write(df_market)
 
 # Mostrar tabla de variaciones junto con los precios de contrato
-st.write("Variaciones porcentuales entre el último y penúltimo dato:")
+st.markdown("## Variaciones porcentuales entre el último y penúltimo dato:")
 st.write(variacion_porcentual.to_frame(name='Variaciones').T.style.format("{:.2f}%").set_caption('Variaciones'))
 
 # Graficar los precios de contrato seleccionados a lo largo del tiempo
-st.title("Precios de Contrato a lo largo del Tiempo")
+st.markdown("## Precios de Contrato a lo largo del Tiempo")
 selected_prices = st.multiselect("Seleccionar Precio de Contrato:", df_market.columns)
 if selected_prices:
     df_market_selected = df_market[selected_prices].reset_index()
     df_market_selected_long = pd.melt(df_market_selected, id_vars=['Fecha'], value_vars=selected_prices)
     fig = px.line(df_market_selected_long, x='Fecha', y='value', color='variable', labels={'Fecha': 'Fecha', 'value': 'Precio', 'variable': 'Precio de Contrato'})
-    fig.update_layout(title="Precios de Contrato a lo largo del Tiempo", xaxis_title="Fecha", yaxis_title="Precio", legend_title="Precio de Contrato")
+    fig.update_layout(title="Precios de Contrato a lo largo del Tiempo", xaxis_title="Fecha", yaxis_title="Precio", legend_title="Precio de Contrato", width=1000, height=600)
+    fig.update_traces(hovertemplate='%{x}<br>%{y}')
     st.plotly_chart(fig, use_container_width=True, config={'displayModeBar': True, 'scrollZoom': False})
 else:
     st.warning("Por favor selecciona al menos un precio de contrato.")
+
