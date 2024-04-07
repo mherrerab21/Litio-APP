@@ -22,6 +22,9 @@ st.markdown(
         background-color: #4B5320;
         color: white;
     }
+    .css-1h2yj8v {
+        max-width: none !important;
+    }
     </style>
     """,
     unsafe_allow_html=True
@@ -33,6 +36,7 @@ st.markdown(
     <style>
     .css-1xjvdi2 {
         font-size: 28px !important;
+        max-width: none !important;
     }
     </style>
     """,
@@ -136,7 +140,7 @@ st.write(df_market)
 
 # Mostrar tabla de variaciones junto con los precios de contrato
 st.markdown("## Variaciones porcentuales entre el último y penúltimo dato:")
-st.write(variacion_porcentual.to_frame(name='Variaciones').T.style.format("{:.2f}%").set_caption('Variaciones'))
+st.dataframe(variacion_porcentual.to_frame(name='Variaciones').T.style.format("{:.2f}%").set_caption('Variaciones'), height=400)
 
 # Graficar los precios de contrato seleccionados a lo largo del tiempo
 st.markdown("## Precios de Contrato a lo largo del Tiempo")
