@@ -136,11 +136,11 @@ variacion_porcentual = (df_market.diff().iloc[-1] / df_market.iloc[-2]) * 100
 
 # Mostrar DataFrame actualizado
 st.markdown("## Precios de Contrato:")
-st.write(df_market)
+st.dataframe(df_market)
 
 # Mostrar tabla de variaciones junto con los precios de contrato
-st.markdown("## Variaciones porcentuales entre el último y penúltimo dato:")
-st.dataframe(variacion_porcentual.to_frame(name='Variaciones').T.style.format("{:.2f}%").set_caption('Variaciones'), height=400)
+st.markdown("## Variaciones Porcentuales entre el último y penúltimo dato:")
+st.dataframe(variacion_porcentual.to_frame(name='Variaciones Porcentuales'), height=400)
 
 # Graficar los precios de contrato seleccionados a lo largo del tiempo
 st.markdown("## Precios de Contrato a lo largo del Tiempo")
@@ -154,3 +154,4 @@ if selected_prices:
     st.plotly_chart(fig, use_container_width=False, config={'displayModeBar': True, 'scrollZoom': False})
 else:
     st.warning("Por favor selecciona al menos un precio de contrato.")
+
