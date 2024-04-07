@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
 import yfinance as yf
-import matplotlib.pyplot as plt
+import plotly.express as px
 from datetime import datetime, timedelta
 
 # Download Yahoo Finance Data (improved error handling)
@@ -107,17 +107,10 @@ st.write(variacion_porcentual.to_frame(name='Variaciones').T.style.format("{:.2f
 st.title("Precios de Contrato a lo largo del Tiempo")
 selected_prices = st.multiselect("Seleccionar Precio de Contrato:", df_market.columns)
 if selected_prices:
-    # Invertir el DataFrame para que las fechas más recientes estén a la derecha
-    df_market_inverted = df_market[selected_prices].iloc[::-1]
-    plt.figure(figsize=(10, 6))
-    for price in selected_prices:
-        plt.plot(df_market_inverted.index, df_market_inverted[price], label=price)
-    plt.xlabel("Fecha")
-    plt.ylabel("Precio")
-    plt.xticks(rotation=45)
-    plt.legend()
-    plt.gca().invert_xaxis()  # Invertir el eje x del gráfico
-    plt.tight_layout()
-    st.pyplot(plt)
+    df_market_selected = df_market[selected_prices].reset_index()
+    df_market_selected_long = pd.melt(df_market_selected, id_vars=['Fecha'], value_vars=selected_prices)
+    fig = px.line(df_market_selected_long, x='Fecha', y='value', color='variable', labels={'Fecha': 'Fecha', 'value': 'Precio', 'variable': 'Precio de Contrato'})
+    fig.update_layout(title="Precios de Contrato a lo largo del Tiempo", xaxis_title="Fecha", yaxis_title="Precio", legend_title="Precio de Contrato")
+    st.plotly_chart(fig, use_container_width=True, config={'displayModeBar': True, 'scrollZoom': False})
 else:
     st.warning("Por favor selecciona al menos un precio de contrato.")
