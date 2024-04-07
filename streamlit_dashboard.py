@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import yfinance as yf
+import matplotlib.pyplot as plt
 from datetime import datetime, timedelta
 
 # Download Yahoo Finance Data (improved error handling)
@@ -92,7 +93,7 @@ if tipo_cambio_USD_CNY is not None:
 df_market = df_market.fillna(0)
 
 # Calcular las variaciones porcentuales entre el último y penúltimo dato para cada columna
-variacion_porcentual = ((df_market.iloc[-1] - df_market.iloc[-2]) / df_market.iloc[-2]) * 100
+variacion_porcentual = (df_market.diff().iloc[-1] / df_market.iloc[-2]) * 100
 
 # Mostrar DataFrame actualizado
 st.write("Precios de Contrato:")
@@ -108,10 +109,15 @@ selected_prices = st.multiselect("Seleccionar Precio de Contrato:", df_market.co
 if selected_prices:
     # Invertir el DataFrame para que las fechas más recientes estén a la derecha
     df_market_inverted = df_market[selected_prices].iloc[::-1]
-    chart = st.line_chart(df_market_inverted, use_container_width=True)
-    chart.pyplot().invert_xaxis()  # Invertir el eje x del gráfico
-    # Mostrar valor y fecha al poner el mouse sobre el gráfico
-    chart.pyplot().tooltip(selected_prices)
+    plt.figure(figsize=(10, 6))
+    for price in selected_prices:
+        plt.plot(df_market_inverted.index, df_market_inverted[price], label=price)
+    plt.xlabel("Fecha")
+    plt.ylabel("Precio")
+    plt.xticks(rotation=45)
+    plt.legend()
+    plt.gca().invert_xaxis()  # Invertir el eje x del gráfico
+    plt.tight_layout()
+    st.pyplot(plt)
 else:
     st.warning("Por favor selecciona al menos un precio de contrato.")
-
