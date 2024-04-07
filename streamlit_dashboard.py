@@ -4,11 +4,13 @@ import yfinance as yf
 import plotly.express as px
 from datetime import datetime, timedelta
 
-# URL del logo de la compañía en GitHub
-logo_url = 'https://github.com/mherrerab21/Litio-APP/raw/main/arrayan-logo.png'
-
-# Mostrar el logo de la compañía en el dashboard
-st.image(logo_url, width=200)  # Ajusta el ancho según sea necesario
+# Configurar el tema de la página
+st.set_page_config(
+    page_title="Dashboard de Precios de Contrato de Litio",
+    layout="wide",  # Opciones: 'centered' (predeterminado), 'wide', 'wide', 'sideb
+    initial_sidebar_state="expanded",  # Opciones: 'auto', 'expanded', 'collapsed'
+    theme="green",  # Configurar el tema en verde
+)
 
 # Establecer el título de la página
 st.title("Dashboard de Precios de Contrato de Litio")
@@ -22,9 +24,6 @@ st.markdown(
         background-color: #4B5320;
         color: white;
     }
-    .css-1h2yj8v {
-        max-width: none !important;
-    }
     </style>
     """,
     unsafe_allow_html=True
@@ -36,17 +35,16 @@ st.markdown(
     <style>
     .css-1xjvdi2 {
         font-size: 28px !important;
-        max-width: none !important;
     }
     </style>
     """,
     unsafe_allow_html=True
 )
 
-# Download Yahoo Finance Data (improved error handling)
-ticker = 'CNY=X'  # Double-check the ticker symbol
+# Descargar datos de Yahoo Finance (mejora en el manejo de errores)
+ticker = 'CNY=X'  # Verifica el símbolo del ticker
 today = datetime.today()
-start_date = today - timedelta(days=7)  # Start a week ago
+start_date = today - timedelta(days=7)  # Comienza hace una semana
 end_date = today
 
 try:
@@ -58,9 +56,12 @@ try:
 except Exception as e:  # Handle different exceptions
     st.error("Error downloading data for {}: {}".format(ticker, e))
 
-# Read Data from Excel
+# Leer datos desde Excel
 nombre_archivo_excel = 'futuros litio.xlsx'
 df_market = pd.read_excel(nombre_archivo_excel, sheet_name='Market')
+
+# Continúa con el resto de tu código aquí...
+
 
 # Data Cleaning and Transformation (corrected renaming)
 df_market.rename(columns={'Conversion en Notas': 'Fecha'}, inplace=True)
