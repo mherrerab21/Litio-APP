@@ -4,6 +4,12 @@ import yfinance as yf
 import plotly.express as px
 from datetime import datetime, timedelta
 
+# URL del logo de la compañía en GitHub
+logo_url = 'https://github.com/mherrerab21/Litio-APP/raw/main/arrayan-logo.png'
+
+# Mostrar el logo de la compañía en el dashboard
+st.image(logo_url, width=200)  # Ajusta el ancho según sea necesario
+
 # Establecer el título de la página
 st.title("Dashboard de Precios de Contrato de Litio")
 st.markdown("---")
@@ -139,9 +145,10 @@ if selected_prices:
     df_market_selected = df_market[selected_prices].reset_index()
     df_market_selected_long = pd.melt(df_market_selected, id_vars=['Fecha'], value_vars=selected_prices)
     fig = px.line(df_market_selected_long, x='Fecha', y='value', color='variable', labels={'Fecha': 'Fecha', 'value': 'Precio', 'variable': 'Precio de Contrato'})
-    fig.update_layout(title="Precios de Contrato a lo largo del Tiempo", xaxis_title="Fecha", yaxis_title="Precio", legend_title="Precio de Contrato", width=1200, height=600)
+    fig.update_layout(title="Precios de Contrato a lo largo del Tiempo", xaxis_title="Fecha", yaxis_title="Precio", legend_title="Precio de Contrato", width=1600, height=600)
     fig.update_traces(hovertemplate='%{x}<br>%{y}')
     st.plotly_chart(fig, use_container_width=True, config={'displayModeBar': True, 'scrollZoom': False})
 else:
     st.warning("Por favor selecciona al menos un precio de contrato.")
+
 
