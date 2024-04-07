@@ -95,12 +95,12 @@ df_market = df_market.fillna(0)
 variacion_porcentual = ((df_market.iloc[-1] - df_market.iloc[-2]) / df_market.iloc[-2]) * 100
 
 # Mostrar DataFrame actualizado
-st.write("Precios Historicos de Contrato:")
+st.write("Precios de Contrato:")
 st.write(df_market)
 
-# Mostrar tabla de variaciones porcentuales junto con los precios de contrato
-st.write("Variacion porcentual:")
-st.write(variacion_porcentual.to_frame().T.style.format("{:.2f}%"))
+# Mostrar tabla de variaciones junto con los precios de contrato
+st.write("Variaciones porcentuales entre el último y penúltimo dato:")
+st.write(variacion_porcentual.to_frame(name='Variaciones').T.style.format("{:.2f}%").set_caption('Variaciones'))
 
 # Graficar los precios de contrato seleccionados a lo largo del tiempo
 st.title("Precios de Contrato a lo largo del Tiempo")
@@ -110,5 +110,8 @@ if selected_prices:
     df_market_inverted = df_market[selected_prices].iloc[::-1]
     chart = st.line_chart(df_market_inverted, use_container_width=True)
     chart.pyplot().invert_xaxis()  # Invertir el eje x del gráfico
+    # Mostrar valor y fecha al poner el mouse sobre el gráfico
+    chart.pyplot().tooltip(selected_prices)
 else:
     st.warning("Por favor selecciona al menos un precio de contrato.")
+
