@@ -106,8 +106,8 @@ st.write(variacion_porcentual)
 st.title("Precios de Contrato a lo largo del Tiempo")
 selected_prices = st.multiselect("Seleccionar Precio de Contrato:", df_market.columns)
 if selected_prices:
-    chart = st.line_chart(df_market[selected_prices], use_container_width=True)
-    chart.pyplot().invert_xaxis()  # Invertir el eje x del gráfico
+    # Invertir el DataFrame para que las fechas más recientes estén a la derecha
+    df_market_inverted = df_market[selected_prices].iloc[::-1]
+    chart = st.line_chart(df_market_inverted, use_container_width=True)
 else:
     st.warning("Por favor selecciona al menos un precio de contrato.")
-
