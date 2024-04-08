@@ -11,12 +11,12 @@ logo_url = 'https://github.com/mherrerab21/Litio-APP/raw/main/arrayan-logo.png'
 st.sidebar.image(logo_url, width=200)  # Ajusta el ancho según sea necesario
 
 # Establecer el título de la página
-st.sidebar.title("Dashboard de Data de Litio")
+st.sidebar.title("Dashboard de Precios de Litio y Derivados")
 
 # Opciones del sidebar
 option = st.sidebar.selectbox(
     'Seleccione una opción',
-    ('Precios de Contrato', 'Contrato Futuro 2407')  # Cambio de 'Contract Data' a 'Contrato Futuro 2407'
+    ('Precios de Contrato', 'Contract Data')
 )
 
 # Cambiar el color de fondo de la página a un verde militar
@@ -145,22 +145,21 @@ if option == 'Precios de Contrato':
     st.dataframe(df_market)
 
     # Mostrar tabla de variaciones porcentuales de forma horizontal con el símbolo de porcentaje
-    st.markdown("## Variaciones Porcentuales:")
+    st.markdown("## Variaciones Porcentuales (Horizontal):")
     st.dataframe(variacion_porcentual.to_frame(name='Variaciones Porcentuales').transpose().style.format("{:.2f}%"))
 
     # Graficar los precios de contrato seleccionados a lo largo del tiempo
-    st.markdown("## Precios Historicos")
+    st.markdown("## Precios de Contrato a lo largo del Tiempo")
     selected_prices = st.multiselect("Seleccionar Precio de Contrato:", df_market.columns)
     if selected_prices:
         df_market_selected = df_market[selected_prices].reset_index()
         df_market_selected_long = pd.melt(df_market_selected, id_vars=['Fecha'], value_vars=selected_prices)
         fig = px.line(df_market_selected_long, x='Fecha', y='value', color='variable', labels={'Fecha': 'Fecha', 'value': 'Precio', 'variable': 'Precio de Contrato'})
-        fig.update_layout(title="Precios Historicos", xaxis_title="Fecha", yaxis_title="Precio", legend_title="Precio de Contrato", width=1600, height=600)  # Ajusta el ancho del gráfico
+        fig.update_layout(title="Precios de Contrato a lo largo del Tiempo", xaxis_title="Fecha", yaxis_title="Precio", legend_title="Precio de Contrato", width=1600, height=600)  # Ajusta el ancho del gráfico
         fig.update_traces(hovertemplate='%{x}<br>%{y}')
         st.plotly_chart(fig, use_container_width=False, config={'displayModeBar': True, 'scrollZoom': False})
     else:
         st.warning("Por favor selecciona al menos un precio de contrato.")
-
 
 elif option == 'Contract Data':
     # Read Data from Excel
