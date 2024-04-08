@@ -180,7 +180,7 @@ elif option == 'Contrato Futuro 2407':  # Cambio de 'Contract Data' a 'Contrato 
 
     # Aplicar el tipo de cambio a las columnas necesarias
     if tipo_cambio_USD_CNY is not None:
-        columns_to_convert = ['Latest', 'Previous Close', 'Open']
+        columns_to_convert = ['Latest', 'Prev.Close', 'Open']
         for column in columns_to_convert:
             df_lc2407[column] /= tipo_cambio_USD_CNY
 
