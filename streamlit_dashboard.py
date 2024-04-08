@@ -119,16 +119,15 @@ if option == 'Litio y Minerales de Litio':  # Cambio de 'Precios de Contrato' a 
     if tipo_cambio_USD_CNY is not None:
         # Operaciones a realizar en las columnas especificadas
         columnas_operaciones = {
-            'Industrial Grade': lambda x: x / tipo_cambio_USD_CNY,  # Mantener el resultado como número flotante
-            'Battery Grade': lambda x: x / tipo_cambio_USD_CNY,
+            'Industrial Grade': lambda x: x /(1+0.13)/tipo_cambio_USD_CNY,  # Mantener el resultado como número flotante
+            'Battery Grade': lambda x: x /(1+0.13)/tipo_cambio_USD_CNY,
             'Lithium Hydroxide BG': lambda x: x / tipo_cambio_USD_CNY,
             'Lithium Hydroxide IG': lambda x: x / tipo_cambio_USD_CNY,
             'Spodumene Domestic China 5%': lambda x: (x * 7.5) + 3750,  # Mantener el resultado como número flotante
-            'Spodumene Concentrate IDXCIF China': lambda x: (x * 7.5) + 3750,  # Mantener el resultado como número flotante
             'AUS Spodumene 6% Spot cif China': lambda x: (x * 7.5) + 3750,  # Mantener el resultado como número flotante
             'BRL Spodumene 6% Spot CIF China': lambda x: (x * 7.5) + 3750,  # Mantener el resultado como número flotante
-            'Lithium Carbonate CIF China': lambda x: x * factor_conversion_KG_to_MT,  # Mantener el resultado como número flotante
-            'Lithium Hydroxide CIF China': lambda x: x * factor_conversion_KG_to_MT  # Mantener el resultado como número flotante
+            'Lithium Carbonate CIF China': lambda x: x / tipo_cambio_USD_CNY * factor_conversion_KG_to_MT,  # Mantener el resultado como número flotante
+            'Lithium Hydroxide CIF China': lambda x: x / tipo_cambio_USD_CNY * factor_conversion_KG_to_MT  # Mantener el resultado como número flotante
         }
 
         # Aplicar operaciones a las columnas correspondientes
@@ -156,8 +155,8 @@ if option == 'Litio y Minerales de Litio':  # Cambio de 'Precios de Contrato' a 
     if selected_prices:
         df_market_selected = df_market[selected_prices].reset_index()
         df_market_selected_long = pd.melt(df_market_selected, id_vars=['Fecha'], value_vars=selected_prices)
-        fig = px.line(df_market_selected_long, x='Fecha', y='value', color='variable', labels={'Fecha': 'Fecha', 'value': 'Precio (USD/mt)', 'variable': 'Precio de Contrato'})
-        fig.update_layout(title="Precios de Contrato a lo largo del Tiempo", xaxis_title="Fecha", yaxis_title="Precio (USD/mt)", legend_title="Precio de Contrato", width=1600, height=600)  # Ajusta el ancho del gráfico
+        fig = px.line(df_market_selected_long, x='Fecha', y='value', color='variable', labels={'Fecha': 'Fecha', 'value': 'Precio', 'variable': 'Precio de Contrato'})
+        fig.update_layout(title="Precios de Contrato a lo largo del Tiempo", xaxis_title="Fecha", yaxis_title="Precio", legend_title="Precio de Contrato", width=1600, height=600)  # Ajusta el ancho del gráfico
         fig.update_traces(hovertemplate='%{x}<br>%{y}')
         st.plotly_chart(fig, use_container_width=False, config={'displayModeBar': True, 'scrollZoom': False})
     else:
@@ -180,14 +179,7 @@ elif option == 'Contrato Futuro 2407':  # Cambio de 'Contract Data' a 'Contrato 
     st.dataframe(df_lc2407)
 
     # Graficar los datos de las columnas 'Latest' y 'Volume'
-    fig_lc2407 = px.line(df_lc2407, x=df_lc2407.index, y=['Latest', 'Volume'], labels={'Date': 'Fecha', 'value': 'Precio (USD/mt)', 'variable': 'Variable'})
-    fig_lc2407.update_layout(title="Datos de Contrato Futuro 2407", xaxis_title="Fecha", yaxis_title="Precio (USD/mt)", legend_title="Variable", width=1600, height=600)  # Cambio de 'Contract Data' a 'Contrato Futuro 2407'
+    fig_lc2407 = px.line(df_lc2407, x=df_lc2407.index, y=['Latest', 'Volume'], labels={'Date': 'Fecha', 'value': 'Valor', 'variable': 'Variable'})
+    fig_lc2407.update_layout(title="Datos de Contrato Futuro 2407", xaxis_title="Fecha", yaxis_title="Valor", legend_title="Variable", width=1600, height=600)  # Cambio de 'Contract Data' a 'Contrato Futuro 2407'
     fig_lc2407.update_traces(hovertemplate='%{x}<br>%{y}')
-    
-    # Agregar eje secundario para el volumen de transacciones
-    fig_lc2407.add_trace(go.Bar(x=df_lc2407.index, y=df_lc2407['Volume'], name='Volumen', yaxis='y2'))
-    fig_lc2407.update_traces(yaxis='y2', showlegend=False)
-    
-    fig_lc2407.update_layout(yaxis2=dict(title='Volumen'))  # Etiqueta para el eje secundario
     st.plotly_chart(fig_lc2407, use_container_width=False, config={'displayModeBar': True, 'scrollZoom': False})
-
