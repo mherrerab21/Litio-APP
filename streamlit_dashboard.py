@@ -11,7 +11,7 @@ logo_url = 'https://github.com/mherrerab21/Litio-APP/raw/main/arrayan-logo.png'
 st.sidebar.image(logo_url, width=200)  # Ajusta el ancho según sea necesario
 
 # Establecer el título de la página
-st.sidebar.title("Dashboard de Precios de Litio y Derivados")
+st.sidebar.title("Dashboard de Litio y Contrato 2407")
 
 # Opciones del sidebar
 option = st.sidebar.selectbox(
@@ -146,7 +146,7 @@ if option == 'Precios de Contrato':
     st.dataframe(df_market)
 
     # Mostrar tabla de variaciones porcentuales de forma horizontal con el símbolo de porcentaje
-    st.markdown("## Variaciones Porcentuales (Horizontal):")
+    st.markdown("## Variaciones Porcentuales:")
     st.dataframe(variacion_porcentual.to_frame(name='Variaciones Porcentuales').transpose().style.format("{:.2f}%"))
 
     # Graficar los precios de contrato seleccionados a lo largo del tiempo
