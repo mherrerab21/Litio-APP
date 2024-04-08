@@ -7,36 +7,19 @@ from datetime import datetime, timedelta
 # URL del logo de la compañía en GitHub
 logo_url = 'https://github.com/mherrerab21/Litio-APP/raw/main/arrayan-logo.png'
 
-# Mostrar el logo de la compañía en el dashboard
-st.image(logo_url, width=200)  # Ajusta el ancho según sea necesario
+# Mostrar el logo de la compañía en el sidebar
+st.sidebar.image(logo_url, width=200)  # Ajusta el ancho según sea necesario
 
-# Establecer el título de la página
-st.title("Dashboard de Precios de Contrato de Litio")
-st.markdown("---")
+# Establecer el título de la página en el sidebar
+st.sidebar.title("Dashboard de Precios de Contrato de Litio")
 
-# Cambiar el color de fondo de la página a un verde militar
-st.markdown(
+# Cambiar el color de fondo del sidebar a un verde militar
+st.sidebar.markdown(
     """
     <style>
-    body {
+    .sidebar .sidebar-content {
         background-color: #4B5320;
         color: white;
-    }
-    .css-1h2yj8v {
-        max-width: none !important;
-    }
-    </style>
-    """,
-    unsafe_allow_html=True
-)
-
-# Establecer todos los títulos con el mismo tamaño
-st.markdown(
-    """
-    <style>
-    .css-1xjvdi2 {
-        font-size: 28px !important;
-        max-width: none !important;
     }
     </style>
     """,
@@ -54,9 +37,9 @@ try:
     if not data_yahoo.empty:  # Check if data is empty
         cierre_ajustado = data_yahoo['Close'].iloc[0]  # Access closing price
     else:
-        st.warning("No data downloaded for {} in the specified date range.".format(ticker))
+        st.sidebar.warning("No data downloaded for {} in the specified date range.".format(ticker))
 except Exception as e:  # Handle different exceptions
-    st.error("Error downloading data for {}: {}".format(ticker, e))
+    st.sidebar.error("Error downloading data for {}: {}".format(ticker, e))
 
 # Read Data from Excel
 nombre_archivo_excel = 'futuros litio.xlsx'
@@ -97,10 +80,10 @@ def obtener_tipo_cambio(ticker):
         if not data_yahoo.empty:  # Check if data is empty
             return round(data_yahoo['Close'].iloc[0], 2)  # Access closing price and round to 2 decimal places
         else:
-            st.warning("No data downloaded for {} in the specified date range.".format(ticker))
+            st.sidebar.warning("No data downloaded for {} in the specified date range.".format(ticker))
             return None
     except Exception as e:  # Handle different exceptions
-        st.error("Error downloading data for {}: {}".format(ticker, e))
+        st.sidebar.error("Error downloading data for {}: {}".format(ticker, e))
         return None
 
 # Obtener tipo de cambio de USD a CNY desde Yahoo Finance
@@ -135,22 +118,23 @@ df_market = df_market.fillna(0)
 variacion_porcentual = (df_market.diff().iloc[-1] / df_market.iloc[-2]) * 100
 
 # Mostrar DataFrame actualizado
-st.markdown("## Precios de Contrato:")
-st.dataframe(df_market)
+st.sidebar.markdown("## Precios de Contrato:")
+st.sidebar.dataframe(df_market)
 
 # Mostrar tabla de variaciones junto con los precios de contrato
-st.markdown("## Variaciones Porcentuales entre el último y penúltimo dato:")
-st.dataframe(variacion_porcentual.to_frame(name='Variaciones Porcentuales'), height=400)
+st.sidebar.markdown("## Variaciones Porcentuales entre el último y penúltimo dato:")
+st.sidebar.dataframe(variacion_porcentual.to_frame(name='Variaciones Porcentuales'), height=400)
 
 # Graficar los precios de contrato seleccionados a lo largo del tiempo
-st.markdown("## Precios de Contrato a lo largo del Tiempo")
-selected_prices = st.multiselect("Seleccionar Precio de Contrato:", df_market.columns)
+st.sidebar.markdown("## Precios de Contrato a lo largo del Tiempo")
+selected_prices = st.sidebar.multiselect("Seleccionar Precio de Contrato:", df_market.columns)
 if selected_prices:
     df_market_selected = df_market[selected_prices].reset_index()
     df_market_selected_long = pd.melt(df_market_selected, id_vars=['Fecha'], value_vars=selected_prices)
     fig = px.line(df_market_selected_long, x='Fecha', y='value', color='variable', labels={'Fecha': 'Fecha', 'value': 'Precio', 'variable': 'Precio de Contrato'})
     fig.update_layout(title="Precios de Contrato a lo largo del Tiempo", xaxis_title="Fecha", yaxis_title="Precio", legend_title="Precio de Contrato", width=1600, height=600)  # Ajusta el ancho del gráfico
     fig.update_traces(hovertemplate='%{x}<br>%{y}')
-    st.plotly_chart(fig, use_container_width=False, config={'displayModeBar': True, 'scrollZoom': False})
+    st.sidebar.plotly_chart(fig, use_container_width=False, config={'displayModeBar': True, 'scrollZoom': False})
 else:
-    st.warning("Por favor selecciona al menos un precio de contrato.")
+    st.sidebar.warning("Por favor selecciona al menos un precio de contrato.")
+
