@@ -181,6 +181,6 @@ elif option == 'Contrato Futuro 2407':  # Cambio de 'Contract Data' a 'Contrato 
 
     # Graficar los datos de las columnas 'Latest' y 'Volume'
     fig_lc2407 = px.line(df_lc2407, x=df_lc2407.index, y=['Latest', 'Volume'], labels={'Date': 'Fecha', 'value': 'Valor', 'variable': 'Variable'})
-    fig_lc2407.update_layout(title="Datos de Contrato Futuro 2407", xaxis_title="Fecha", yaxis_title="Valor", legend_title="Variable", width=1600, height=600)  # Cambio de 'Contract Data' a 'Contrato Futuro 2407'
+    fig_lc2407.update_layout(title="Datos de Contrato Futuro 2407", xaxis_title="Fecha", yaxis_title="Precio (USD/mt)", legend_title="Variable", width=1600, height=600)  # Cambio de 'Contract Data' a 'Contrato Futuro 2407'
     fig_lc2407.update_traces(hovertemplate='%{x}<br>%{y}')
     st.plotly_chart(fig_lc2407, use_container_width=False, config={'displayModeBar': True, 'scrollZoom': False})
