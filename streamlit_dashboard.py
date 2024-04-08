@@ -16,7 +16,7 @@ st.sidebar.title("Dashboard de Data de Litio")
 # Opciones del sidebar
 option = st.sidebar.selectbox(
     'Seleccione una opción',
-    ('Precios de Contrato', 'Contract Data')
+    ('Precios de Contrato', 'Contrato Futuro 2407')  # Cambio de 'Contract Data' a 'Contrato Futuro 2407'
 )
 
 # Cambiar el color de fondo de la página a un verde militar
@@ -160,6 +160,7 @@ if option == 'Precios de Contrato':
         st.plotly_chart(fig, use_container_width=False, config={'displayModeBar': True, 'scrollZoom': False})
     else:
         st.warning("Por favor selecciona al menos un precio de contrato.")
+
 
 elif option == 'Contract Data':
     # Read Data from Excel
