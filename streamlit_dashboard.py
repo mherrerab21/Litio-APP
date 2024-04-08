@@ -16,7 +16,7 @@ st.sidebar.title("Dashboard de Precios de Litio y Derivados")
 # Opciones del sidebar
 option = st.sidebar.selectbox(
     'Seleccione una opción',
-    ('Precios de Contrato', 'Contract Data', 'Opción 3')
+    ('Precios de Contrato', 'Contract Data')
 )
 
 # Cambiar el color de fondo de la página a un verde militar
@@ -148,6 +148,10 @@ if option == 'Precios de Contrato':
     st.markdown("## Variaciones Porcentuales entre el último y penúltimo dato:")
     st.dataframe(variacion_porcentual.to_frame(name='Variaciones Porcentuales'), height=400)
 
+    # Mostrar tabla de variaciones porcentuales de forma horizontal
+    st.markdown("## Variaciones Porcentuales (Horizontal):")
+    st.dataframe(variacion_porcentual.to_frame(name='Variaciones Porcentuales').transpose())
+
     # Graficar los precios de contrato seleccionados a lo largo del tiempo
     st.markdown("## Precios de Contrato a lo largo del Tiempo")
     selected_prices = st.multiselect("Seleccionar Precio de Contrato:", df_market.columns)
@@ -183,9 +187,3 @@ elif option == 'Contract Data':
     fig_lc2407.update_layout(title="Datos de Contrato 2407", xaxis_title="Fecha", yaxis_title="Valor", legend_title="Variable", width=1600, height=600)
     fig_lc2407.update_traces(hovertemplate='%{x}<br>%{y}')
     st.plotly_chart(fig_lc2407, use_container_width=False, config={'displayModeBar': True, 'scrollZoom': False})
-
-elif option == 'Opción 3':
-    st.write('Has seleccionado la opción 3')
-    # Aquí puedes agregar el código para la opción 3
-
-
