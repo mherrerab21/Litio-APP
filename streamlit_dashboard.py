@@ -183,5 +183,11 @@ elif option == 'Contrato Futuro 2407':  # Cambio de 'Contract Data' a 'Contrato 
     fig_lc2407 = px.line(df_lc2407, x=df_lc2407.index, y=['Latest', 'Volume'], labels={'Date': 'Fecha', 'value': 'Precio (USD/mt)', 'variable': 'Variable'})
     fig_lc2407.update_layout(title="Datos de Contrato Futuro 2407", xaxis_title="Fecha", yaxis_title="Precio (USD/mt)", legend_title="Variable", width=1600, height=600)  # Cambio de 'Contract Data' a 'Contrato Futuro 2407'
     fig_lc2407.update_traces(hovertemplate='%{x}<br>%{y}')
+    
+    # Agregar eje secundario para el volumen de transacciones
+    fig_lc2407.add_trace(go.Bar(x=df_lc2407.index, y=df_lc2407['Volume'], name='Volumen', yaxis='y2'))
+    fig_lc2407.update_traces(yaxis='y2', showlegend=False)
+    
+    fig_lc2407.update_layout(yaxis2=dict(title='Volumen'))  # Etiqueta para el eje secundario
     st.plotly_chart(fig_lc2407, use_container_width=False, config={'displayModeBar': True, 'scrollZoom': False})
 
