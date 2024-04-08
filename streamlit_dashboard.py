@@ -11,7 +11,7 @@ logo_url = 'https://github.com/mherrerab21/Litio-APP/raw/main/arrayan-logo.png'
 st.sidebar.image(logo_url, width=200)  # Ajusta el ancho según sea necesario
 
 # Establecer el título de la página
-st.sidebar.title("Dashboard de Precios de Litio y Derivados")
+st.sidebar.title("Dashboard de Data de Litio")
 
 # Opciones del sidebar
 option = st.sidebar.selectbox(
