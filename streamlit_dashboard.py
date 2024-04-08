@@ -16,7 +16,7 @@ st.sidebar.title("Dashboard de Precios de Litio y Derivados")
 # Opciones del sidebar
 option = st.sidebar.selectbox(
     'Seleccione una opción',
-    ('Precios de Contrato', 'Contract Data', 'Opción 3')
+    ('Precios de Contrato', 'Opción 2', 'Opción 3')
 )
 
 # Cambiar el color de fondo de la página a un verde militar
@@ -145,8 +145,8 @@ if option == 'Precios de Contrato':
     st.dataframe(df_market)
 
     # Mostrar tabla de variaciones junto con los precios de contrato
-    st.markdown("## Variaciones Porcentuales entre el último y penúltimo dato:")
-    st.dataframe(variacion_porcentual.to_frame(name='Variaciones Porcentuales'), height=400)
+    st.markdown("## Variaciones Porcentuales:")
+    st.dataframe(variacion_porcentual.rename('Variaciones Porcentuales').transpose())
 
     # Graficar los precios de contrato seleccionados a lo largo del tiempo
     st.markdown("## Precios de Contrato a lo largo del Tiempo")
@@ -161,30 +161,12 @@ if option == 'Precios de Contrato':
     else:
         st.warning("Por favor selecciona al menos un precio de contrato.")
 
-elif option == 'Contract Data':
-    # Read Data from Excel
-    nombre_archivo_excel = 'futuros litio.xlsx'
-    df_lc2407 = pd.read_excel(nombre_archivo_excel, sheet_name='Contrato 2407')
-
-    # Data Cleaning and Transformation (corrected renaming)
-    df_lc2407.set_index('Date', inplace=True)
-    df_lc2407.index = pd.to_datetime(df_lc2407.index).strftime('%d/%m/%y')
-
-    # Convertir las columnas 'Var%' y 'O.I%' a formato de porcentaje
-    df_lc2407['Var %'] = df_lc2407['Var %'] * 100
-    df_lc2407['O.I %'] = df_lc2407['O.I %'] * 100
-
-    # Mostrar DataFrame actualizado
-    st.markdown("## Contract Data:")
-    st.dataframe(df_lc2407)
-
-    # Graficar los datos de las columnas 'Latest' y 'Volume'
-    fig_lc2407 = px.line(df_lc2407, x=df_lc2407.index, y=['Latest', 'Volume'], labels={'Date': 'Fecha', 'value': 'Valor', 'variable': 'Variable'})
-    fig_lc2407.update_layout(title="Datos de Contrato 2407", xaxis_title="Fecha", yaxis_title="Valor", legend_title="Variable", width=1600, height=600)
-    fig_lc2407.update_traces(hovertemplate='%{x}<br>%{y}')
-    st.plotly_chart(fig_lc2407, use_container_width=False, config={'displayModeBar': True, 'scrollZoom': False})
+elif option == 'Opción 2':
+    st.write('Has seleccionado la opción 2')
+    # Aquí puedes agregar el código para la opción 2
 
 elif option == 'Opción 3':
     st.write('Has seleccionado la opción 3')
     # Aquí puedes agregar el código para la opción 3
+
 
