@@ -16,7 +16,7 @@ st.sidebar.title("Dashboard de Litio y Contrato 2407")
 # Opciones del sidebar
 option = st.sidebar.selectbox(
     'Seleccione una opción',
-    ('Precios de Contrato', 'Contrato Futuro 2407')  # Cambio de 'Contract Data' a 'Contrato Futuro 2407'
+    ('Litio y Minerales de Litio', 'Contrato Futuro 2407')
 )
 
 # Cambiar el color de fondo de la página a un verde militar
@@ -66,7 +66,7 @@ except Exception as e:  # Handle different exceptions
 # Read Data from Excel
 nombre_archivo_excel = 'futuros litio.xlsx'
 
-if option == 'Precios de Contrato':
+if option == 'Litio y Minerales de Litio':  # Cambio de 'Precios de Contrato' a 'Litio y Minerales de Litio'
     df_market = pd.read_excel(nombre_archivo_excel, sheet_name='Market')
 
     # Data Cleaning and Transformation (corrected renaming)
@@ -142,7 +142,7 @@ if option == 'Precios de Contrato':
     variacion_porcentual = (df_market.diff().iloc[-1] / df_market.iloc[-2]) * 100
 
     # Mostrar DataFrame actualizado
-    st.markdown("## Precios de Contrato:")
+    st.markdown("## Litio y Minerales de Litio:")  # Cambio de 'Precios de Contrato' a 'Litio y Minerales de Litio'
     st.dataframe(df_market)
 
     # Mostrar tabla de variaciones porcentuales de forma horizontal con el símbolo de porcentaje
