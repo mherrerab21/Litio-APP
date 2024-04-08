@@ -121,10 +121,10 @@ if option == 'Litio y Minerales de Litio':  # Cambio de 'Precios de Contrato' a 
         columnas_operaciones = {
             'Industrial Grade': lambda x: x /(1+0.13)/tipo_cambio_USD_CNY,  # Mantener el resultado como número flotante
             'Battery Grade': lambda x: x /(1+0.13)/tipo_cambio_USD_CNY,
-            'Lithium Hydroxide BG': lambda x: x / tipo_cambio_USD_CNY,
-            'Lithium Hydroxide IG': lambda x: x / tipo_cambio_USD_CNY,
+            'Lithium Hydroxide BG': lambda x: x /(1+0.13)/tipo_cambio_USD_CNY,
+            'Lithium Hydroxide IG': lambda x: x /(1+0.13)/tipo_cambio_USD_CNY,
             'Spodumene Concentrate IDXCIF China': lambda x: (x * 7.5) + 3750,  # Mantener el resultado como número flotante
-            'Spodumene Domestic China 5%': lambda x: (x * 7.5) + 3750,  # Mantener el resultado como número flotante
+            'Spodumene Domestic China 5%': lambda x: ((x/(1+0.13)) * 7.5) + 3750,  # Mantener el resultado como número flotante
             'AUS Spodumene 6% Spot cif China': lambda x: (x * 7.5) + 3750,  # Mantener el resultado como número flotante
             'BRL Spodumene 6% Spot CIF China': lambda x: (x * 7.5) + 3750,  # Mantener el resultado como número flotante
             'Lithium Carbonate CIF China': lambda x: x * factor_conversion_KG_to_MT,  # Mantener el resultado como número flotante
