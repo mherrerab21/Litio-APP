@@ -145,8 +145,9 @@ if option == 'Precios de Contrato':
     st.dataframe(df_market)
 
     # Mostrar tabla de variaciones junto con los precios de contrato
-    st.markdown("## Variaciones Porcentuales entre el último y penúltimo dato:")
-    st.dataframe(variacion_porcentual.to_frame(name='Variaciones Porcentuales'), height=400)
+    st.markdown("## Variaciones Porcentuales entre el último y penúltimo dato")
+    st.write("Variaciones Porcentuales (%):")
+    st.dataframe(variacion_porcentual.to_frame(name='Variaciones Porcentuales').T.style.format("{:.2f}%"), height=100)
 
     # Graficar los precios de contrato seleccionados a lo largo del tiempo
     st.markdown("## Precios de Contrato a lo largo del Tiempo")
@@ -165,6 +166,5 @@ elif option == 'Opción 2':
     st.write('Has seleccionado la opción 2')
     # Aquí puedes agregar el código para la opción 2
 
-elif option == 'Opción 3':
-    st.write('Has seleccionado la opción 3')
-    # Aquí puedes agregar el código para la opción 3
+
+
