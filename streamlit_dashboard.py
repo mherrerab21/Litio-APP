@@ -144,13 +144,9 @@ if option == 'Precios de Contrato':
     st.markdown("## Precios de Contrato:")
     st.dataframe(df_market)
 
-    # Mostrar tabla de variaciones junto con los precios de contrato
-    st.markdown("## Variaciones Porcentuales entre el último y penúltimo dato:")
-    st.dataframe(variacion_porcentual.to_frame(name='Variaciones Porcentuales'), height=400)
-
-    # Mostrar tabla de variaciones porcentuales de forma horizontal
+    # Mostrar tabla de variaciones porcentuales de forma horizontal con el símbolo de porcentaje
     st.markdown("## Variaciones Porcentuales (Horizontal):")
-    st.dataframe(variacion_porcentual.to_frame(name='Variaciones Porcentuales').transpose())
+    st.dataframe(variacion_porcentual.to_frame(name='Variaciones Porcentuales').transpose().style.format("{:.2f}%"))
 
     # Graficar los precios de contrato seleccionados a lo largo del tiempo
     st.markdown("## Precios de Contrato a lo largo del Tiempo")
