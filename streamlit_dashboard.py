@@ -4,9 +4,6 @@ import yfinance as yf
 import plotly.express as px
 from datetime import datetime, timedelta
 
-# Establecer la apariencia predeterminada a Wide Mode y el tema negro
-st.set_page_config(layout="wide", initial_sidebar_state="expanded", page_title='Litio App', page_icon=':battery:', theme='dark')
-
 # URL del logo de la compañía en GitHub
 logo_url = 'https://github.com/mherrerab21/Litio-APP/raw/main/arrayan-logo.png'
 
