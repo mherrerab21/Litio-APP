@@ -123,6 +123,7 @@ if option == 'Litio y Minerales de Litio':  # Cambio de 'Precios de Contrato' a 
             'Battery Grade': lambda x: x /(1+0.13)/tipo_cambio_USD_CNY,
             'Lithium Hydroxide BG': lambda x: x / tipo_cambio_USD_CNY,
             'Lithium Hydroxide IG': lambda x: x / tipo_cambio_USD_CNY,
+            'Spodumene Concentrate IDXCIF China': lambda x: (x * 7.5) + 3750,  # Mantener el resultado como número flotante
             'Spodumene Domestic China 5%': lambda x: (x * 7.5) + 3750,  # Mantener el resultado como número flotante
             'AUS Spodumene 6% Spot cif China': lambda x: (x * 7.5) + 3750,  # Mantener el resultado como número flotante
             'BRL Spodumene 6% Spot CIF China': lambda x: (x * 7.5) + 3750,  # Mantener el resultado como número flotante
@@ -155,8 +156,8 @@ if option == 'Litio y Minerales de Litio':  # Cambio de 'Precios de Contrato' a 
     if selected_prices:
         df_market_selected = df_market[selected_prices].reset_index()
         df_market_selected_long = pd.melt(df_market_selected, id_vars=['Fecha'], value_vars=selected_prices)
-        fig = px.line(df_market_selected_long, x='Fecha', y='value', color='variable', labels={'Fecha': 'Fecha', 'value': 'Precio', 'variable': 'Precio de Contrato'})
-        fig.update_layout(title="Precios de Contrato a lo largo del Tiempo", xaxis_title="Fecha", yaxis_title="Precio", legend_title="Precio de Contrato", width=1600, height=600)  # Ajusta el ancho del gráfico
+        fig = px.line(df_market_selected_long, x='Fecha', y='value', color='variable', labels={'Fecha': 'Fecha', 'value': 'Precio (USD/mt)', 'variable': 'Precio de Contrato'})
+        fig.update_layout(title="Precios de Contrato a lo largo del Tiempo", xaxis_title="Fecha", yaxis_title="Precio (USD/mt)", legend_title="Precio de Contrato", width=1600, height=600)  # Ajusta el ancho del gráfico
         fig.update_traces(hovertemplate='%{x}<br>%{y}')
         st.plotly_chart(fig, use_container_width=False, config={'displayModeBar': True, 'scrollZoom': False})
     else:
