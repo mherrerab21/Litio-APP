@@ -145,17 +145,17 @@ if option == 'Precios de Contrato':
     st.dataframe(df_market)
 
     # Mostrar tabla de variaciones porcentuales de forma horizontal con el símbolo de porcentaje
-    st.markdown("## Variaciones Porcentuales (Horizontal):")
+    st.markdown("## Variaciones Porcentuales:")
     st.dataframe(variacion_porcentual.to_frame(name='Variaciones Porcentuales').transpose().style.format("{:.2f}%"))
 
     # Graficar los precios de contrato seleccionados a lo largo del tiempo
-    st.markdown("## Precios de Contrato a lo largo del Tiempo")
+    st.markdown("## Precios Historicos")
     selected_prices = st.multiselect("Seleccionar Precio de Contrato:", df_market.columns)
     if selected_prices:
         df_market_selected = df_market[selected_prices].reset_index()
         df_market_selected_long = pd.melt(df_market_selected, id_vars=['Fecha'], value_vars=selected_prices)
         fig = px.line(df_market_selected_long, x='Fecha', y='value', color='variable', labels={'Fecha': 'Fecha', 'value': 'Precio', 'variable': 'Precio de Contrato'})
-        fig.update_layout(title="Precios de Contrato a lo largo del Tiempo", xaxis_title="Fecha", yaxis_title="Precio", legend_title="Precio de Contrato", width=1600, height=600)  # Ajusta el ancho del gráfico
+        fig.update_layout(title="Precios Historicos", xaxis_title="Fecha", yaxis_title="Precio", legend_title="Precio de Contrato", width=1600, height=600)  # Ajusta el ancho del gráfico
         fig.update_traces(hovertemplate='%{x}<br>%{y}')
         st.plotly_chart(fig, use_container_width=False, config={'displayModeBar': True, 'scrollZoom': False})
     else:
