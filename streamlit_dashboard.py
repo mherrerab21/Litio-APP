@@ -66,6 +66,19 @@ except Exception as e:  # Handle different exceptions
 # Read Data from Excel
 nombre_archivo_excel = 'futuros litio.xlsx'
 
+# Función para obtener tipo de cambio de USD a CNY desde Yahoo Finance
+def obtener_tipo_cambio(ticker):
+    try:
+        data_yahoo = yf.download(ticker, start=start_date, end=end_date)
+        if not data_yahoo.empty:  # Check if data is empty
+            return round(data_yahoo['Close'].iloc[0], 2)  # Access closing price and round to 2 decimal places
+        else:
+            st.warning("No data downloaded for {} in the specified date range.".format(ticker))
+            return None
+    except Exception as e:  # Handle different exceptions
+        st.error("Error downloading data for {}: {}".format(ticker, e))
+        return None
+
 if option == 'Litio y Minerales de Litio':  # Cambio de 'Precios de Contrato' a 'Litio y Minerales de Litio'
     df_market = pd.read_excel(nombre_archivo_excel, sheet_name='Market')
 
@@ -96,19 +109,6 @@ if option == 'Litio y Minerales de Litio':  # Cambio de 'Precios de Contrato' a 
 
     # Convertir el índice a objetos de fecha y luego formatear las fechas
     df_market.index = pd.to_datetime(df_market.index).strftime('%d/%m/%y')
-
-    # Función para obtener tipo de cambio de USD a CNY desde Yahoo Finance
-    def obtener_tipo_cambio(ticker):
-        try:
-            data_yahoo = yf.download(ticker, start=start_date, end=end_date)
-            if not data_yahoo.empty:  # Check if data is empty
-                return round(data_yahoo['Close'].iloc[0], 2)  # Access closing price and round to 2 decimal places
-            else:
-                st.warning("No data downloaded for {} in the specified date range.".format(ticker))
-                return None
-        except Exception as e:  # Handle different exceptions
-            st.error("Error downloading data for {}: {}".format(ticker, e))
-            return None
 
     # Obtener tipo de cambio de USD a CNY desde Yahoo Finance
     tipo_cambio_USD_CNY = obtener_tipo_cambio('USDCNY=X')
@@ -174,6 +174,15 @@ elif option == 'Contrato Futuro 2407':  # Cambio de 'Contract Data' a 'Contrato 
     # Convertir las columnas 'Var%' y 'O.I%' a formato de porcentaje
     df_lc2407['Var %'] = df_lc2407['Var %'] * 100
     df_lc2407['O.I %'] = df_lc2407['O.I %'] * 100
+
+    # Obtener tipo de cambio de USD a CNY desde Yahoo Finance
+    tipo_cambio_USD_CNY = obtener_tipo_cambio('USDCNY=X')
+
+    # Aplicar el tipo de cambio a las columnas necesarias
+    if tipo_cambio_USD_CNY is not None:
+        columns_to_convert = ['Latest', 'Previous Close', 'Open']
+        for column in columns_to_convert:
+            df_lc2407[column] /= tipo_cambio_USD_CNY
 
     # Mostrar DataFrame actualizado
     st.markdown("## Contrato Futuro 2407:")  # Cambio de 'Contract Data' a 'Contrato Futuro 2407'
