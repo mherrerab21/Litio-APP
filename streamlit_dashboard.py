@@ -189,15 +189,13 @@ elif option == 'Contrato Futuro 2407':  # Cambio de 'Contract Data' a 'Contrato 
     st.dataframe(df_lc2407)
 
 
-   # Graficar los datos de las columnas 'Latest' y 'Volume' con slider en el eje x y eje y secundario para el volumen
-    fig_lc2407 = px.line(df_lc2407, x=df_lc2407.index, y='Latest', labels={'Date': 'Fecha', 'value': 'Valor', 'variable': 'Variable'})
-    fig_lc2407.add_trace(go.Scatter(x=df_lc2407.index, y=df_lc2407['Volume'], name="Volume", yaxis="y2"))
+  # Graficar los datos de las columnas 'Latest' y 'Volume' con slider en el eje x
+    fig_lc2407 = px.line(df_lc2407, x=df_lc2407.index, y=['Latest', 'Volume'], labels={'Date': 'Fecha', 'value': 'Valor', 'variable': 'Variable'})
     fig_lc2407.update_layout(title="Datos de Contrato Futuro 2407", xaxis_title="Fecha", yaxis_title="Precio (USD/mt)", legend_title="Variable", width=1200, height=500)  # Cambio de 'Contract Data' a 'Contrato Futuro 2407'
     fig_lc2407.update_traces(hovertemplate='%{x}<br>%{y}')
     fig_lc2407.update_xaxes(rangeslider_visible=True)  # Add x-axis range slider
-    fig_lc2407.update_yaxes(title_text="Precio (USD/mt)", secondary_y=False)
-    fig_lc2407.update_yaxes(title_text="Volumen", secondary_y=True)
     st.plotly_chart(fig_lc2407, use_container_width=False, config={'displayModeBar': True, 'scrollZoom': False})
+
 
 
 
