@@ -2,7 +2,6 @@ import streamlit as st
 import pandas as pd
 import yfinance as yf
 import plotly.graph_objects as go
-from plotly.subplots import make_subplots  # Import make_subplots function
 from datetime import datetime, timedelta
 
 # URL del logo de la compañía en GitHub
@@ -157,9 +156,7 @@ if option == 'Litio y Minerales de Litio':  # Cambio de 'Precios de Contrato' a 
     if selected_prices:
         df_market_selected = df_market[selected_prices].reset_index()
         df_market_selected_long = pd.melt(df_market_selected, id_vars=['Fecha'], value_vars=selected_prices)
-        fig = go.Figure()
-        for column in selected_prices:
-            fig.add_trace(go.Scatter(x=df_market_selected_long['Fecha'], y=df_market_selected_long['value'][df_market_selected_long['variable'] == column], mode='lines', name=column))
+        fig = px.line(df_market_selected_long, x='Fecha', y='value', color='variable', labels={'Fecha': 'Fecha', 'value': 'Precio (USD/mt)', 'variable': 'Precio de Contrato'})
         fig.update_layout(title="Precios de Contrato a lo largo del Tiempo", xaxis_title="Fecha", yaxis_title="Precio (USD/mt)", legend_title="Precio de Contrato", width=1600, height=600)  # Ajusta el ancho del gráfico
         fig.update_traces(hovertemplate='%{x}<br>%{y}')
         st.plotly_chart(fig, use_container_width=False, config={'displayModeBar': True, 'scrollZoom': False})
@@ -191,8 +188,8 @@ elif option == 'Contrato Futuro 2407':  # Cambio de 'Contract Data' a 'Contrato 
     st.markdown("## Contrato Futuro 2407:")  # Cambio de 'Contract Data' a 'Contrato Futuro 2407'
     st.dataframe(df_lc2407)
 
-    # Create subplots
-    fig_lc2407 = make_subplots(rows=2, cols=1, shared_xaxes=True, vertical_spacing=0.05)
+    # Create subplots with more spacing between the graphs
+    fig_lc2407 = go.Figure()
 
     # Add traces
     fig_lc2407.add_trace(
@@ -216,7 +213,7 @@ elif option == 'Contrato Futuro 2407':  # Cambio de 'Contract Data' a 'Contrato 
     fig_lc2407.update_yaxes(range=[0, df_lc2407['Volume'].max() * 1.1], row=2, col=1)
 
     # Update layout
-    fig_lc2407.update_layout(title="Datos de Contrato Futuro 2407", width=1200, height=800, xaxis_rangeslider_visible=True)
+    fig_lc2407.update_layout(title="Datos de Contrato Futuro 2407", width=1200, height=800, xaxis_rangeslider_visible=True, vertical_spacing=0.1)
 
     # Show plot
     st.plotly_chart(fig_lc2407, use_container_width=False, config={'displayModeBar': True, 'scrollZoom': False})
