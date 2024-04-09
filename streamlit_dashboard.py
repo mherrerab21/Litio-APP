@@ -191,22 +191,18 @@ elif option == 'Contrato Futuro 2407':  # Cambio de 'Contract Data' a 'Contrato 
 
     # Create a subplot for price and volume
     fig_lc2407 = make_subplots(rows=2, cols=1, shared_xaxes=True,
-                               vertical_spacing=0.1, subplot_titles=("Price", "Volume"))
+                               vertical_spacing=0.3, subplot_titles=("Price", "Volume"))  # Increase vertical spacing
 
     # Add trace for price
     fig_lc2407.add_trace(go.Scatter(x=df_lc2407.index, y=df_lc2407['Latest'], mode='lines', name='Price'), row=1, col=1)
 
     # Add trace for volume
-    fig_lc2407.add_trace(go.Bar(x=df_lc2407.index, y=df_lc2407['Volume'], name='Volume'), row=2, col=1)
+    colors_volume = ['red' if df_lc2407['Volume'].diff().iloc[i] < 0 else 'green' for i in range(len(df_lc2407))]
+    fig_lc2407.add_trace(go.Bar(x=df_lc2407.index, y=df_lc2407['Volume'], name='Volume', marker_color=colors_volume), row=2, col=1)
 
     # Update layout
-    fig_lc2407.update_layout(title="Data for Contract Future 2407", width=1200, height=800, xaxis_title="Date")
-
-    # Update x-axis range slider
-    fig_lc2407.update_xaxes(rangeslider_visible=True)
-
-    # Update y-axis title for volume subplot
-    fig_lc2407.update_yaxes(title_text="Volume", row=2, col=1)
+    fig_lc2407.update_layout(title="Data for Future Contract 2407",
+                             xaxis_title="Date", width=1200, height=800)
 
     # Show the plot
     st.plotly_chart(fig_lc2407, use_container_width=False, config={'displayModeBar': True, 'scrollZoom': False})
