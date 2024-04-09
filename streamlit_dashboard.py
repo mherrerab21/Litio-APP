@@ -185,8 +185,8 @@ elif option == 'Contrato Futuro 2407':  # Cambio de 'Contract Data' a 'Contrato 
         for column in columns_to_convert:
             df_lc2407[column] /= tipo_cambio_USD_CNY
 
-    # Crear gráfico con subplots
-    fig_lc2407 = make_subplots(rows=2, cols=1, shared_xaxes=True, vertical_spacing=0.05)
+    # Crear gráfico con subplots y ajustar la distancia vertical entre ellos
+    fig_lc2407 = make_subplots(rows=2, cols=1, shared_xaxes=True, vertical_spacing=0.1)  # Ajusta el valor vertical_spacing según sea necesario
 
     # Agregar gráfico de precios al primer subplot
     fig_lc2407.add_trace(go.Scatter(x=df_lc2407.index, y=df_lc2407['Latest'], mode='lines', name='Latest'), row=1, col=1)
