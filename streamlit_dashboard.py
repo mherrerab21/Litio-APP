@@ -4,6 +4,7 @@ import yfinance as yf
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots  # Add this import
 from datetime import datetime, timedelta
+import plotly.express as px 
 
 # URL del logo de la compañía en GitHub
 logo_url = 'https://github.com/mherrerab21/Litio-APP/raw/main/arrayan-logo.png'
