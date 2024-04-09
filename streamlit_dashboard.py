@@ -2,7 +2,6 @@ import streamlit as st
 import pandas as pd
 import yfinance as yf
 import plotly.express as px
-from plotly import graph_objects as go
 from datetime import datetime, timedelta
 
 # URL del logo de la compañía en GitHub
@@ -189,16 +188,10 @@ elif option == 'Contrato Futuro 2407':  # Cambio de 'Contract Data' a 'Contrato 
     st.markdown("## Contrato Futuro 2407:")  # Cambio de 'Contract Data' a 'Contrato Futuro 2407'
     st.dataframe(df_lc2407)
 
-    # Graficar los datos de las columnas 'Latest' y 'Volume' con slider en el eje x y eje y secundario para el volumen
-    fig_lc2407 = px.line(df_lc2407, x=df_lc2407.index, y='Latest', labels={'Date': 'Fecha', 'value': 'Valor', 'variable': 'Variable'})
-    fig_lc2407.update_layout(title="Datos de Contrato Futuro 2407", xaxis_title="Fecha", yaxis_title="Precio (USD/mt)", legend_title="Variable", width=1600, height=600)
 
-    # Agregar gráfico de barras para el volumen
-    fig_volume = px.bar(df_lc2407, x=df_lc2407.index, y='Volume', labels={'Date': 'Fecha', 'value': 'Volumen'})
-    fig_volume.update_traces(marker_color='green', selector=dict(type='bar', y=lambda y: y > 0))
-    fig_volume.update_traces(marker_color='red', selector=dict(type='bar', y=lambda y: y <= 0))
-    fig_volume.update_layout(title="Volumen de Contrato Futuro 2407", xaxis_title="Fecha", yaxis_title="Volumen", width=1600, height=400)
-
-    # Mostrar gráficos
+  # Graficar los datos de las columnas 'Latest' y 'Volume' con slider en el eje x
+    fig_lc2407 = px.line(df_lc2407, x=df_lc2407.index, y=['Latest', 'Volume'], labels={'Date': 'Fecha', 'value': 'Valor', 'variable': 'Variable'})
+    fig_lc2407.update_layout(title="Datos de Contrato Futuro 2407", xaxis_title="Fecha", yaxis_title="Precio (USD/mt)", legend_title="Variable", width=1200, height=500)  # Cambio de 'Contract Data' a 'Contrato Futuro 2407'
+    fig_lc2407.update_traces(hovertemplate='%{x}<br>%{y}')
+    fig_lc2407.update_xaxes(rangeslider_visible=True)  # Add x-axis range slider
     st.plotly_chart(fig_lc2407, use_container_width=False, config={'displayModeBar': True, 'scrollZoom': False})
-    st.plotly_chart(fig_volume, use_container_width=False, config={'displayModeBar': True, 'scrollZoom': False})
