@@ -2,7 +2,6 @@ import streamlit as st
 import pandas as pd
 import yfinance as yf
 import plotly.graph_objects as go
-from plotly.subplots import make_subplots  # Add this import
 from datetime import datetime, timedelta
 
 # URL del logo de la compañía en GitHub
@@ -189,16 +188,19 @@ elif option == 'Contrato Futuro 2407':  # Cambio de 'Contract Data' a 'Contrato 
     st.markdown("## Contrato Futuro 2407:")  # Cambio de 'Contract Data' a 'Contrato Futuro 2407'
     st.dataframe(df_lc2407)
 
-    # Create a subplot for price and volume
-    fig_lc2407 = make_subplots(rows=2, cols=1, shared_xaxes=True,
-                               vertical_spacing=0.3, subplot_titles=("Price", "Volume"))  # Increase vertical spacing
+    # Define colors for volume bars
+    colors_volume = ['red' if df_lc2407['Volume'].diff().iloc[i] < 0 else 'green' for i in range(len(df_lc2407))]
 
-    # Add trace for price
-    fig_lc2407.add_trace(go.Scatter(x=df_lc2407.index, y=df_lc2407['Latest'], mode='lines', name='Price'), row=1, col=1)
+    # Create figure with subplots
+    fig_lc2407 = go.Figure()
+
+    # Add trace for contract price
+    fig_lc2407.add_trace(go.Scatter(x=df_lc2407.index, y=df_lc2407['Latest'], mode='lines', name='Price', line=dict(color='blue')))
+    fig_lc2407.update_yaxes(title_text="Price (USD/mt)", row=1, col=1)
 
     # Add trace for volume
-    colors_volume = ['red' if df_lc2407['Volume'].diff().iloc[i] < 0 else 'green' for i in range(len(df_lc2407))]
-    fig_lc2407.add_trace(go.Bar(x=df_lc2407.index, y=df_lc2407['Volume'], name='Volume', marker_color=colors_volume), row=2, col=1)
+    fig_lc2407.add_trace(go.Bar(x=df_lc2407.index, y=df_lc2407['Volume'], name="Volume", marker_color=colors_volume))
+    fig_lc2407.update_yaxes(title_text="Volume", row=2, col=1)
 
     # Update layout
     fig_lc2407.update_layout(title="Data for Future Contract 2407",
