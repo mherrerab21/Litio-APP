@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 import yfinance as yf
 import plotly.graph_objects as go
-from plotly.subplots import make_subplots  # Add this import
+from plotly.subplots import make_subplots  # Import make_subplots function
 from datetime import datetime, timedelta
 
 # URL del logo de la compañía en GitHub
@@ -157,7 +157,9 @@ if option == 'Litio y Minerales de Litio':  # Cambio de 'Precios de Contrato' a 
     if selected_prices:
         df_market_selected = df_market[selected_prices].reset_index()
         df_market_selected_long = pd.melt(df_market_selected, id_vars=['Fecha'], value_vars=selected_prices)
-        fig = px.line(df_market_selected_long, x='Fecha', y='value', color='variable', labels={'Fecha': 'Fecha', 'value': 'Precio (USD/mt)', 'variable': 'Precio de Contrato'})
+        fig = go.Figure()
+        for column in selected_prices:
+            fig.add_trace(go.Scatter(x=df_market_selected_long['Fecha'], y=df_market_selected_long['value'][df_market_selected_long['variable'] == column], mode='lines', name=column))
         fig.update_layout(title="Precios de Contrato a lo largo del Tiempo", xaxis_title="Fecha", yaxis_title="Precio (USD/mt)", legend_title="Precio de Contrato", width=1600, height=600)  # Ajusta el ancho del gráfico
         fig.update_traces(hovertemplate='%{x}<br>%{y}')
         st.plotly_chart(fig, use_container_width=False, config={'displayModeBar': True, 'scrollZoom': False})
@@ -189,20 +191,32 @@ elif option == 'Contrato Futuro 2407':  # Cambio de 'Contract Data' a 'Contrato 
     st.markdown("## Contrato Futuro 2407:")  # Cambio de 'Contract Data' a 'Contrato Futuro 2407'
     st.dataframe(df_lc2407)
 
-    # Create a subplot for price and volume
-    fig_lc2407 = make_subplots(rows=2, cols=1, shared_xaxes=True,
-                               vertical_spacing=0.3, subplot_titles=("Price", "Volume"))  # Increase vertical spacing
+    # Create subplots
+    fig_lc2407 = make_subplots(rows=2, cols=1, shared_xaxes=True, vertical_spacing=0.05)
 
-    # Add trace for price
-    fig_lc2407.add_trace(go.Scatter(x=df_lc2407.index, y=df_lc2407['Latest'], mode='lines', name='Price'), row=1, col=1)
+    # Add traces
+    fig_lc2407.add_trace(
+        go.Scatter(x=df_lc2407.index, y=df_lc2407['Latest'], name="Latest", line=dict(color='royalblue')),
+        row=1, col=1
+    )
 
-    # Add trace for volume
-    colors_volume = ['red' if df_lc2407['Volume'].diff().iloc[i] < 0 else 'green' for i in range(len(df_lc2407))]
-    fig_lc2407.add_trace(go.Bar(x=df_lc2407.index, y=df_lc2407['Volume'], name='Volume', marker_color=colors_volume), row=2, col=1)
+    fig_lc2407.add_trace(
+        go.Bar(x=df_lc2407.index, y=df_lc2407['Volume'], name="Volume", marker_color='green', opacity=0.5),
+        row=2, col=1
+    )
+
+    # Update axes titles
+    fig_lc2407.update_xaxes(title_text="Fecha", row=1, col=1)
+    fig_lc2407.update_xaxes(title_text="Fecha", row=2, col=1)
+
+    fig_lc2407.update_yaxes(title_text="Price (USD/mt)", row=1, col=1)
+    fig_lc2407.update_yaxes(title_text="Volume", row=2, col=1)
+
+    # Update y-axis range for volume bars
+    fig_lc2407.update_yaxes(range=[0, df_lc2407['Volume'].max() * 1.1], row=2, col=1)
 
     # Update layout
-    fig_lc2407.update_layout(title="Data for Future Contract 2407",
-                             xaxis_title="Date", width=1200, height=800)
+    fig_lc2407.update_layout(title="Datos de Contrato Futuro 2407", width=1200, height=800, xaxis_rangeslider_visible=True)
 
-    # Show the plot
+    # Show plot
     st.plotly_chart(fig_lc2407, use_container_width=False, config={'displayModeBar': True, 'scrollZoom': False})
