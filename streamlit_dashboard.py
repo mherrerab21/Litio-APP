@@ -191,8 +191,14 @@ elif option == 'Contrato Futuro 2407':  # Cambio de 'Contract Data' a 'Contrato 
 
     # Graficar los datos de las columnas 'Latest' y 'Volume' con slider en el eje x y eje y secundario para el volumen
     fig_lc2407 = px.line(df_lc2407, x=df_lc2407.index, y='Latest', labels={'Date': 'Fecha', 'value': 'Valor', 'variable': 'Variable'})
-    fig_lc2407.add_trace(go.Bar(x=df_lc2407.index, y=df_lc2407['Volume'], showlegend=False, marker_color='blue'))
     fig_lc2407.update_layout(title="Datos de Contrato Futuro 2407", xaxis_title="Fecha", yaxis_title="Precio (USD/mt)", legend_title="Variable", width=1600, height=600)
-    fig_lc2407.update_traces(hovertemplate='%{x}<br>%{y}')
-    st.plotly_chart(fig_lc2407, use_container_width=False, config={'displayModeBar': True, 'scrollZoom': False})
 
+    # Agregar gráfico de barras para el volumen
+    fig_volume = px.bar(df_lc2407, x=df_lc2407.index, y='Volume', labels={'Date': 'Fecha', 'value': 'Volumen'})
+    fig_volume.update_traces(marker_color='green', selector=dict(type='bar', y=lambda y: y > 0))
+    fig_volume.update_traces(marker_color='red', selector=dict(type='bar', y=lambda y: y <= 0))
+    fig_volume.update_layout(title="Volumen de Contrato Futuro 2407", xaxis_title="Fecha", yaxis_title="Volumen", width=1600, height=400)
+
+    # Mostrar gráficos
+    st.plotly_chart(fig_lc2407, use_container_width=False, config={'displayModeBar': True, 'scrollZoom': False})
+    st.plotly_chart(fig_volume, use_container_width=False, config={'displayModeBar': True, 'scrollZoom': False})
