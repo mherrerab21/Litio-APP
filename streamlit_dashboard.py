@@ -188,32 +188,23 @@ elif option == 'Contrato Futuro 2407':  # Cambio de 'Contract Data' a 'Contrato 
     st.markdown("## Contrato Futuro 2407:")  # Cambio de 'Contract Data' a 'Contrato Futuro 2407'
     st.dataframe(df_lc2407)
 
-    # Create subplots
-    fig_lc2407 = make_subplots(rows=2, cols=1, shared_xaxes=True, vertical_spacing=0.05)
+    # Define colors for volume bars
+    colors_volume = ['red' if df_lc2407['Volume'].diff().iloc[i] < 0 else 'green' for i in range(len(df_lc2407))]
 
-    # Add traces
-    fig_lc2407.add_trace(
-        go.Scatter(x=df_lc2407.index, y=df_lc2407['Latest'], name="Latest", line=dict(color='royalblue')),
-        row=1, col=1
-    )
+    # Create figure with subplots
+    fig_lc2407 = go.Figure()
 
-    fig_lc2407.add_trace(
-        go.Bar(x=df_lc2407.index, y=df_lc2407['Volume'], name="Volume", marker_color='green', opacity=0.5),
-        row=2, col=1
-    )
-
-    # Update axes titles
-    fig_lc2407.update_xaxes(title_text="Fecha", row=1, col=1)
-    fig_lc2407.update_xaxes(title_text="Fecha", row=2, col=1)
-
+    # Add trace for contract price
+    fig_lc2407.add_trace(go.Scatter(x=df_lc2407.index, y=df_lc2407['Latest'], mode='lines', name='Price', line=dict(color='blue')))
     fig_lc2407.update_yaxes(title_text="Price (USD/mt)", row=1, col=1)
+
+    # Add trace for volume
+    fig_lc2407.add_trace(go.Bar(x=df_lc2407.index, y=df_lc2407['Volume'], name="Volume", marker_color=colors_volume))
     fig_lc2407.update_yaxes(title_text="Volume", row=2, col=1)
 
-    # Update y-axis range for volume bars
-    fig_lc2407.update_yaxes(range=[0, df_lc2407['Volume'].max() * 1.1], row=2, col=1)
-
     # Update layout
-    fig_lc2407.update_layout(title="Datos de Contrato Futuro 2407", width=1200, height=800, xaxis_rangeslider_visible=True)
+    fig_lc2407.update_layout(title="Data for Future Contract 2407",
+                             xaxis_title="Date", width=1200, height=800)
 
-    # Show plot
+    # Show the plot
     st.plotly_chart(fig_lc2407, use_container_width=False, config={'displayModeBar': True, 'scrollZoom': False})
