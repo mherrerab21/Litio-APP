@@ -201,11 +201,12 @@ elif option == 'Contrato Futuro 2407':
     # Add trace for volume
     colors_volume = ['red' if df_lc2407['Volume'].diff().iloc[i] < 0 else 'green' for i in range(len(df_lc2407))]
     fig_lc2407.add_trace(go.Bar(x=df_lc2407.index, y=df_lc2407['Volume'], name='Volume', marker_color=colors_volume), row=2, col=1)
-    fig_lc2407.update_yaxes(title_text="Volume", row=2, col=1)  
+    fig_lc2407.update_yaxes(title_text="Volume", row=2, col=1)
+    fig_lc2407.update_xaxes(title_text="Date", row=2, col=1)  # Move x-axis title to volume plot
 
     # Update layout
     fig_lc2407.update_layout(title="Data for Future Contract 2407",
-                             xaxis_title="Date", width=1200, height=600)  
+                             width=1200, height=600)  
 
     # Show the plot
     st.plotly_chart(fig_lc2407, use_container_width=False, config={'displayModeBar': True, 'scrollZoom': False})
@@ -248,7 +249,7 @@ elif option == 'Contrato Futuro 2501':
 
     # Update layout for Contract 2501
     fig_lc2501.update_layout(title="Data for Future Contract 2501",
-                             xaxis_title="Date", width=1200, height=600)  
+                             width=1200, height=600)  
 
     # Show the plot for Contract 2501
     st.plotly_chart(fig_lc2501, use_container_width=False, config={'displayModeBar': True, 'scrollZoom': False})
