@@ -245,7 +245,8 @@ elif option == 'Contrato Futuro 2501':
     # Add trace for volume for Contract 2501
     colors_volume_lc2501 = ['red' if df_lc2501['Volume'].diff().iloc[i] < 0 else 'green' for i in range(len(df_lc2501))]
     fig_lc2501.add_trace(go.Bar(x=df_lc2501.index, y=df_lc2501['Volume'], name='Volume', marker_color=colors_volume_lc2501), row=2, col=1)
-    fig_lc2501.update_yaxes(title_text="Volume", row=2, col=1)  
+    fig_lc2501.update_yaxes(title_text="Volume", row=2, col=1)
+    fig_lc2501.update_xaxes(title_text="Date", row=2, col=1)  # Move x-axis title to volume plot
 
     # Update layout for Contract 2501
     fig_lc2501.update_layout(title="Data for Future Contract 2501",
