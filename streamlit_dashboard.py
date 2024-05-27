@@ -2,15 +2,15 @@ import streamlit as st
 import pandas as pd
 import yfinance as yf
 import plotly.graph_objects as go
-from plotly.subplots import make_subplots  # Add this import
+from plotly.subplots import make_subplots
 from datetime import datetime, timedelta
-import plotly.express as px 
+import plotly.express as px
 
 # URL del logo de la compañía en GitHub
 logo_url = 'https://github.com/mherrerab21/Litio-APP/raw/main/arrayan-logo.png'
 
 # Mostrar el logo de la compañía en el dashboard
-st.sidebar.image(logo_url, width=200)  # Ajusta el ancho según sea necesario
+st.sidebar.image(logo_url, width=200) 
 
 # Establecer el título de la página
 st.sidebar.title("Dashboard de Litio y Contrato 2407")
@@ -18,7 +18,7 @@ st.sidebar.title("Dashboard de Litio y Contrato 2407")
 # Opciones del sidebar
 option = st.sidebar.selectbox(
     'Seleccione una opción',
-    ('Litio y Minerales de Litio', 'Contrato Futuro 2407')
+    ('Litio y Minerales de Litio', 'Contrato Futuro 2407', 'Contrato Futuro 2501')
 )
 
 # Cambiar el color de fondo de la página a un verde militar
@@ -51,19 +51,19 @@ st.markdown(
 )
 
 # Download Yahoo Finance Data (improved error handling)
-ticker = 'CNY=X'  # Double-check the ticker symbol
+ticker = 'CNY=X' 
 today = datetime.today()
-start_date = today - timedelta(days=7)  # Start a week ago
+start_date = today - timedelta(days=7)  
 end_date = today
 
 try:
     data_yahoo = yf.download(ticker, start=start_date, end=end_date)
-    if not data_yahoo.empty:  # Check if data is empty
-        cierre_ajustado = data_yahoo['Close'].iloc[0]  # Access closing price
+    if not data_yahoo.empty:  
+        cierre_ajustado = data_yahoo['Close'].iloc[0]  
     else:
-        st.warning("No data downloaded for {} in the specified date range.".format(ticker))
-except Exception as e:  # Handle different exceptions
-    st.error("Error downloading data for {}: {}".format(ticker, e))
+        st.warning("No se han descargado datos para {} en el rango de fechas especificado.".format(ticker))
+except Exception as e:  
+    st.error("Error al descargar datos para {}: {}".format(ticker, e))
 
 # Read Data from Excel
 nombre_archivo_excel = 'futuros litio.xlsx'
@@ -72,19 +72,19 @@ nombre_archivo_excel = 'futuros litio.xlsx'
 def obtener_tipo_cambio(ticker):
     try:
         data_yahoo = yf.download(ticker, start=start_date, end=end_date)
-        if not data_yahoo.empty:  # Check if data is empty
-            return round(data_yahoo['Close'].iloc[0], 2)  # Access closing price and round to 2 decimal places
+        if not data_yahoo.empty:  
+            return round(data_yahoo['Close'].iloc[0], 2)  
         else:
-            st.warning("No data downloaded for {} in the specified date range.".format(ticker))
+            st.warning("No se han descargado datos para {} en el rango de fechas especificado.".format(ticker))
             return None
-    except Exception as e:  # Handle different exceptions
-        st.error("Error downloading data for {}: {}".format(ticker, e))
+    except Exception as e:  
+        st.error("Error al descargar datos para {}: {}".format(ticker, e))
         return None
 
-if option == 'Litio y Minerales de Litio':  # Cambio de 'Precios de Contrato' a 'Litio y Minerales de Litio'
+if option == 'Litio y Minerales de Litio':  
     df_market = pd.read_excel(nombre_archivo_excel, sheet_name='Market')
 
-    # Data Cleaning and Transformation (corrected renaming)
+    # Data Cleaning and Transformation
     df_market.rename(columns={'Conversion en Notas': 'Fecha'}, inplace=True)
     df_market.set_index('Fecha', inplace=True)
 
@@ -116,23 +116,22 @@ if option == 'Litio y Minerales de Litio':  # Cambio de 'Precios de Contrato' a 
     tipo_cambio_USD_CNY = obtener_tipo_cambio('USDCNY=X')
 
     # Definir factor de conversión de KG a metric tons
-    factor_conversion_KG_to_MT = 1000  # 1 KG = 0.001 metric tons
+    factor_conversion_KG_to_MT = 1000  
 
     if tipo_cambio_USD_CNY is not None:
         # Operaciones a realizar en las columnas especificadas
         columnas_operaciones = {
-            'Industrial Grade': lambda x: x /(1+0.13)/tipo_cambio_USD_CNY,  # Mantener el resultado como número flotante
+            'Industrial Grade': lambda x: x /(1+0.13)/tipo_cambio_USD_CNY,  
             'Battery Grade': lambda x: x /(1+0.13)/tipo_cambio_USD_CNY,
             'Lithium Hydroxide BG': lambda x: x /(1+0.13)/tipo_cambio_USD_CNY,
             'Lithium Hydroxide IG': lambda x: x /(1+0.13)/tipo_cambio_USD_CNY,
-            'Spodumene Concentrate IDXCIF China': lambda x: (x * 7.5) + 3750,  # Mantener el resultado como número flotante
-            'Spodumene Domestic China 5%': lambda x: ((x/(1+0.13))/tipo_cambio_USD_CNY)* 7.5 + 3750,  # Mantener el resultado como número flotante
-            'AUS Spodumene 6% Spot cif China': lambda x: (x * 7.5) + 3750,  # Mantener el resultado como número flotante
-            'BRL Spodumene 6% Spot CIF China': lambda x: (x * 7.5) + 3750,  # Mantener el resultado como número flotante
-            'Lithium Carbonate CIF China': lambda x: x * factor_conversion_KG_to_MT,  # Mantener el resultado como número flotante
-            'Lithium Hydroxide CIF China': lambda x: x * factor_conversion_KG_to_MT  # Mantener el resultado como número flotante
+            'Spodumene Concentrate IDXCIF China': lambda x: (x * 7.5) + 3750,  
+            'Spodumene Domestic China 5%': lambda x: ((x/(1+0.13))/tipo_cambio_USD_CNY)* 7.5 + 3750,  
+            'AUS Spodumene 6% Spot cif China': lambda x: (x * 7.5) + 3750,  
+            'BRL Spodumene 6% Spot CIF China': lambda x: (x * 7.5) + 3750,  
+            'Lithium Carbonate CIF China': lambda x: x * factor_conversion_KG_to_MT,  
+            'Lithium Hydroxide CIF China': lambda x: x * factor_conversion_KG_to_MT  
         }
-
         # Aplicar operaciones a las columnas correspondientes
         for columna, operacion in columnas_operaciones.items():
             if columna in df_market.columns:
@@ -145,7 +144,7 @@ if option == 'Litio y Minerales de Litio':  # Cambio de 'Precios de Contrato' a 
     variacion_porcentual = (df_market.diff().iloc[-1] / df_market.iloc[-2]) * 100
 
     # Mostrar DataFrame actualizado
-    st.markdown("## Litio y Minerales de Litio:")  # Cambio de 'Precios de Contrato' a 'Litio y Minerales de Litio'
+    st.markdown("## Litio y Minerales de Litio:")  
     st.dataframe(df_market)
 
     # Mostrar tabla de variaciones porcentuales de forma horizontal con el símbolo de porcentaje
@@ -159,17 +158,17 @@ if option == 'Litio y Minerales de Litio':  # Cambio de 'Precios de Contrato' a 
         df_market_selected = df_market[selected_prices].reset_index()
         df_market_selected_long = pd.melt(df_market_selected, id_vars=['Fecha'], value_vars=selected_prices)
         fig = px.line(df_market_selected_long, x='Fecha', y='value', color='variable', labels={'Fecha': 'Fecha', 'value': 'Precio (USD/mt)', 'variable': 'Precio de Contrato'})
-        fig.update_layout(title="Precios de Contrato a lo largo del Tiempo", xaxis_title="Fecha", yaxis_title="Precio (USD/mt)", legend_title="Precio de Contrato", width=1600, height=600)  # Ajusta el ancho del gráfico
+        fig.update_layout(title="Precios de Contrato a lo largo del Tiempo", xaxis_title="Fecha", yaxis_title="Precio (USD/mt)", legend_title="Precio de Contrato", width=1600, height=600) 
         fig.update_traces(hovertemplate='%{x}<br>%{y}')
         st.plotly_chart(fig, use_container_width=False, config={'displayModeBar': True, 'scrollZoom': False})
     else:
         st.warning("Por favor selecciona al menos un precio de contrato.")
 
-elif option == 'Contrato Futuro 2407':  # Cambio de 'Contract Data' a 'Contrato Futuro 2407'
+elif option == 'Contrato Futuro 2407':  
     # Read Data from Excel
     df_lc2407 = pd.read_excel(nombre_archivo_excel, sheet_name='Contrato 2407')
 
-    # Data Cleaning and Transformation (corrected renaming)
+    # Data Cleaning and Transformation
     df_lc2407.set_index('Date', inplace=True)
     df_lc2407.index = pd.to_datetime(df_lc2407.index).strftime('%d/%m/%y')
 
@@ -187,26 +186,70 @@ elif option == 'Contrato Futuro 2407':  # Cambio de 'Contract Data' a 'Contrato 
             df_lc2407[column] /= tipo_cambio_USD_CNY
 
     # Mostrar DataFrame actualizado
-    st.markdown("## Contrato Futuro 2407:")  # Cambio de 'Contract Data' a 'Contrato Futuro 2407'
+    st.markdown("## Contrato Futuro 2407:")  
     st.dataframe(df_lc2407)
 
     # Create a subplot for price and volume
     fig_lc2407 = make_subplots(rows=2, cols=1, shared_xaxes=True,
-                               vertical_spacing=0.15, subplot_titles=("Price", "Volume"))  # Decrease vertical spacing
+                               vertical_spacing=0.15, subplot_titles=("Price", ""))  
 
     # Add trace for price
     fig_lc2407.add_trace(go.Scatter(x=df_lc2407.index, y=df_lc2407['Latest'], mode='lines', name='Price'), row=1, col=1)
-    fig_lc2407.update_yaxes(title_text="Price (USD/mt)", row=1, col=1)  # Add y-axis title
+    fig_lc2407.update_yaxes(title_text="Price (USD/mt)", row=1, col=1)  
 
     # Add trace for volume
     colors_volume = ['red' if df_lc2407['Volume'].diff().iloc[i] < 0 else 'green' for i in range(len(df_lc2407))]
     fig_lc2407.add_trace(go.Bar(x=df_lc2407.index, y=df_lc2407['Volume'], name='Volume', marker_color=colors_volume), row=2, col=1)
-    fig_lc2407.update_yaxes(title_text="Volume", row=2, col=1)  # Add y-axis title
-    fig_lc2407.update_xaxes(title_text="Date", row=2, col=1)  # Add x-axis title for volume plot
+    fig_lc2407.update_yaxes(title_text="Volume", row=2, col=1)  
 
     # Update layout
     fig_lc2407.update_layout(title="Data for Future Contract 2407",
-                             xaxis_title="", width=1200, height=600)  # Decrease height of the plot
+                             xaxis_title="Date", width=1200, height=600)  
 
     # Show the plot
     st.plotly_chart(fig_lc2407, use_container_width=False, config={'displayModeBar': True, 'scrollZoom': False})
+
+elif option == 'Contrato Futuro 2501':  
+    # Read Data from Excel for Contract 2501
+    df_lc2501 = pd.read_excel(nombre_archivo_excel, sheet_name='Contrato 2501')
+
+    # Data Cleaning and Transformation for Contract 2501
+    df_lc2501.set_index('Date', inplace=True)
+    df_lc2501.index = pd.to_datetime(df_lc2501.index).strftime('%d/%m/%y')
+
+    # Convertir las columnas 'Var%' y 'O.I%' a formato de porcentaje
+    df_lc2501['Var %'] = df_lc2501['Var %'] * 100
+    df_lc2501['O.I %'] = df_lc2501['O.I %'] * 100
+
+    # Obtener tipo de cambio de USD a CNY desde Yahoo Finance
+    tipo_cambio_USD_CNY = obtener_tipo_cambio('USDCNY=X')
+
+    # Aplicar el tipo de cambio a las columnas necesarias
+    if tipo_cambio_USD_CNY is not None:
+        columns_to_convert = ['Latest', 'Prev.Close', 'Open']
+        for column in columns_to_convert:
+            df_lc2501[column] /= tipo_cambio_USD_CNY
+
+    # Mostrar DataFrame actualizado para el Contrato 2501
+    st.markdown("## Contrato Futuro 2501:") 
+    st.dataframe(df_lc2501)
+
+    # Create a subplot for price and volume for Contract 2501
+    fig_lc2501 = make_subplots(rows=2, cols=1, shared_xaxes=True,
+                               vertical_spacing=0.15, subplot_titles=("Price", ""))
+    # Add trace for price for Contract 2501
+        fig_lc2501.add_trace(go.Scatter(x=df_lc2501.index, y=df_lc2501['Latest'], mode='lines', name='Price'), row=1, col=1)
+    fig_lc2501.update_yaxes(title_text="Price (USD/mt)", row=1, col=1)  
+
+    # Add trace for volume for Contract 2501
+    colors_volume_lc2501 = ['red' if df_lc2501['Volume'].diff().iloc[i] < 0 else 'green' for i in range(len(df_lc2501))]
+    fig_lc2501.add_trace(go.Bar(x=df_lc2501.index, y=df_lc2501['Volume'], name='Volume', marker_color=colors_volume_lc2501), row=2, col=1)
+    fig_lc2501.update_yaxes(title_text="Volume", row=2, col=1)  
+
+    # Update layout for Contract 2501
+    fig_lc2501.update_layout(title="Data for Future Contract 2501",
+                             xaxis_title="Date", width=1200, height=600)  
+
+    # Show the plot for Contract 2501
+    st.plotly_chart(fig_lc2501, use_container_width=False, config={'displayModeBar': True, 'scrollZoom': False})
+
