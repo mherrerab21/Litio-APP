@@ -192,7 +192,7 @@ elif option == 'Contrato Futuro 2407':  # Cambio de 'Contract Data' a 'Contrato 
 
     # Create a subplot for price and volume
     fig_lc2407 = make_subplots(rows=2, cols=1, shared_xaxes=True,
-                               vertical_spacing=0.1, subplot_titles=("Price", "Volume"))  # Decrease vertical spacing
+                               vertical_spacing=0.15, subplot_titles=("Price", "Volume"))  # Decrease vertical spacing
 
     # Add trace for price
     fig_lc2407.add_trace(go.Scatter(x=df_lc2407.index, y=df_lc2407['Latest'], mode='lines', name='Price'), row=1, col=1)
