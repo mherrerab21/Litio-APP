@@ -252,10 +252,3 @@ elif option == 'Contrato Futuro 2501':
 
     # Show the plot for Contract 2501
     st.plotly_chart(fig_lc2501, use_container_width=False, config={'displayModeBar': True, 'scrollZoom': False})
-
-
-
-
-
-
-
