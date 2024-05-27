@@ -132,6 +132,7 @@ if option == 'Litio y Minerales de Litio':
             'Lithium Carbonate CIF China': lambda x: x * factor_conversion_KG_to_MT,  
             'Lithium Hydroxide CIF China': lambda x: x * factor_conversion_KG_to_MT  
         }
+
         # Aplicar operaciones a las columnas correspondientes
         for columna, operacion in columnas_operaciones.items():
             if columna in df_market.columns:
@@ -237,8 +238,7 @@ elif option == 'Contrato Futuro 2501':
     # Create a subplot for price and volume for Contract 2501
     fig_lc2501 = make_subplots(rows=2, cols=1, shared_xaxes=True,
                                vertical_spacing=0.15, subplot_titles=("Price", ""))
-    # Add trace for price for Contract 2501
-        fig_lc2501.add_trace(go.Scatter(x=df_lc2501.index, y=df_lc2501['Latest'], mode='lines', name='Price'), row=1, col=1)
+    fig_lc2501.add_trace(go.Scatter(x=df_lc2501.index, y=df_lc2501['Latest'], mode='lines', name='Price'), row=1, col=1)
     fig_lc2501.update_yaxes(title_text="Price (USD/mt)", row=1, col=1)  
 
     # Add trace for volume for Contract 2501
@@ -252,4 +252,10 @@ elif option == 'Contrato Futuro 2501':
 
     # Show the plot for Contract 2501
     st.plotly_chart(fig_lc2501, use_container_width=False, config={'displayModeBar': True, 'scrollZoom': False})
+
+
+
+
+
+
 
