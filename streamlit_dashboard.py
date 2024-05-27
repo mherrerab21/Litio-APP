@@ -205,7 +205,7 @@ elif option == 'Contrato Futuro 2407':  # Cambio de 'Contract Data' a 'Contrato 
 
     # Update layout
     fig_lc2407.update_layout(title="Data for Future Contract 2407",
-                             xaxis_title="Date", width=1200, height=600)  # Decrease height of the plot
+                             xaxis_title="", width=1200, height=600)  # Decrease height of the plot
 
     # Show the plot
     st.plotly_chart(fig_lc2407, use_container_width=False, config={'displayModeBar': True, 'scrollZoom': False})
