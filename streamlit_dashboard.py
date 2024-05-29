@@ -182,7 +182,7 @@ elif option == 'Contrato Futuro 2407':
 
     # Aplicar el tipo de cambio a las columnas necesarias
     if tipo_cambio_USD_CNY is not None:
-        columns_to_convert = ['Latest', 'Prev.Close', 'Open']
+        columns_to_convert = ['Latest', 'Prev.Close','Prev.Settle', 'Open']
         for column in columns_to_convert:
             df_lc2407[column] /= tipo_cambio_USD_CNY
 
@@ -228,7 +228,7 @@ elif option == 'Contrato Futuro 2501':
 
     # Aplicar el tipo de cambio a las columnas necesarias
     if tipo_cambio_USD_CNY is not None:
-        columns_to_convert = ['Latest', 'Prev.Close', 'Open']
+        columns_to_convert = ['Latest', 'Prev.Close','Prev.Settle' ,'Open']
         for column in columns_to_convert:
             df_lc2501[column] /= tipo_cambio_USD_CNY
 
