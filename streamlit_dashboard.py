@@ -18,7 +18,7 @@ st.sidebar.title("Dashboard de Litio y Contrato 2407")
 # Opciones del sidebar
 option = st.sidebar.selectbox(
     'Seleccione una opción',
-    ('Litio y Minerales de Litio', 'Contrato Futuro 2407', 'Contrato Futuro 2501')
+    ('Litio y Minerales de Litio', 'Contrato Futuro 2407', 'Contrato Futuro 2501', 'Contrato Futuro 2411')
 )
 
 # Cambiar el color de fondo de la página a un verde militar
@@ -254,3 +254,47 @@ elif option == 'Contrato Futuro 2501':
 
     # Show the plot for Contract 2501
     st.plotly_chart(fig_lc2501, use_container_width=False, config={'displayModeBar': True, 'scrollZoom': False})
+
+elif option == 'Contrato Futuro 2411':  
+    # Read Data from Excel for Contract 2411
+    df_lc2411 = pd.read_excel(nombre_archivo_excel, sheet_name='Contrato 2411')
+
+    # Data Cleaning and Transformation for Contract 2411
+    df_lc2411.set_index('Date', inplace=True)
+    df_lc2411.index = pd.to_datetime(df_lc2411.index).strftime('%d/%m/%y')
+
+    # Convertir las columnas 'Var%' y 'O.I%' a formato de porcentaje
+    df_lc2411['Var %'] = df_lc2411['Var %'] * 100
+    df_lc2411['O.I %'] = df_lc2411['O.I %'] * 100
+
+    # Obtener tipo de cambio de USD a CNY desde Yahoo Finance
+    tipo_cambio_USD_CNY = obtener_tipo_cambio('USDCNY=X')
+
+    # Aplicar el tipo de cambio a las columnas necesarias
+    if tipo_cambio_USD_CNY is not None:
+        columns_to_convert = ['Latest', 'Prev.Close','Prev.Settle' ,'Open']
+        for column in columns_to_convert:
+            df_lc2411[column] /= tipo_cambio_USD_CNY
+
+    # Mostrar DataFrame actualizado para el Contrato 2411
+    st.markdown("## Contrato Futuro 2411:") 
+    st.dataframe(df_lc2411)
+
+    # Create a subplot for price and volume for Contract 2411
+    fig_lc2411 = make_subplots(rows=2, cols=1, shared_xaxes=True,
+                               vertical_spacing=0.15, subplot_titles=("Price", ""))
+    fig_lc2411.add_trace(go.Scatter(x=df_lc2411.index, y=df_lc2411['Latest'], mode='lines', name='Price'), row=1, col=1)
+    fig_lc2411.update_yaxes(title_text="Price (USD/mt)", row=1, col=1)  
+
+    # Add trace for volume for Contract 2411
+    colors_volume_lc2411 = ['red' if df_lc2411['Volume'].diff().iloc[i] < 0 else 'green' for i in range(len(df_lc2411))]
+    fig_lc2411.add_trace(go.Bar(x=df_lc2411.index, y=df_lc2411['Volume'], name='Volume', marker_color=colors_volume_lc2411), row=2, col=1)
+    fig_lc2411.update_yaxes(title_text="Volume", row=2, col=1)
+    fig_lc2411.update_xaxes(title_text="Date", row=2, col=1)  # Move x-axis title to volume plot
+
+    # Update layout for Contract 2411
+    fig_lc2411.update_layout(title="Data for Future Contract 2411",
+                             width=1200, height=600)  
+
+    # Show the plot for Contract 2411
+    st.plotly_chart(fig_lc2411, use_container_width=False, config={'displayModeBar': True, 'scrollZoom': False})
