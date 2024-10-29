@@ -267,7 +267,8 @@ elif option == 'Contrato Futuro 2411':
     # Convertir las columnas 'Var%' y 'O.I%' a formato de porcentaje
     df_lc2411['Var %'] = df_lc2411['Var %'] * 100
     df_lc2411['O.I %'] = df_lc2411['O.I %'] * 100
-    df_lc2411.columns = pd.Series(df_lc2411.columns).where(~df_lc2411.columns.duplicated(), df_lc2411.columns + '_dup')
+    df_lc2411 = df_lc2411.loc[:, ~df_lc2411.columns.duplicated()]
+
 
     # Obtener tipo de cambio de USD a CNY desde Yahoo Finance
     tipo_cambio_USD_CNY = obtener_tipo_cambio('USDCNY=X')
