@@ -223,12 +223,6 @@ elif option == 'Contrato Futuro 2501':
     df_lc2501['Var %'] = df_lc2501['Var %'] * 100
     df_lc2501['O.I %'] = df_lc2501['O.I %'] * 100
 
-    # Obtener tipo de cambio de USD a CNY desde Yahoo Finance
-    tipo_cambio_USD_CNY = obtener_tipo_cambio('USDCNY=X')
-
-    # Remove duplicate index labels in df_lc2501
-    df_lc2501 = df_lc2501[~df_lc2501.index.duplicated()]
-
     # Aplicar el tipo de cambio a las columnas necesarias
     if tipo_cambio_USD_CNY is not None:
         columns_to_convert = ['Latest', 'Prev.Close','Prev.Settle' ,'Open']
