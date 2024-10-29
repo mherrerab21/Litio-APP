@@ -180,6 +180,9 @@ elif option == 'Contrato Futuro 2407':
     # Obtener tipo de cambio de USD a CNY desde Yahoo Finance
     tipo_cambio_USD_CNY = obtener_tipo_cambio('USDCNY=X')
 
+    # Remove duplicate indices to avoid errors
+    df_lc2407 = df_lc2407[~df_lc2407.index.duplicated()]
+
     # Aplicar el tipo de cambio a las columnas necesarias
     if tipo_cambio_USD_CNY is not None:
         columns_to_convert = ['Latest', 'Prev.Close','Prev.Settle', 'Open']
