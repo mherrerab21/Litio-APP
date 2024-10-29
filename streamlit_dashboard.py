@@ -56,31 +56,30 @@ today = datetime.today()
 start_date = today - timedelta(days=7)  
 end_date = today
 
-def download_data(ticker):
-    try:
-        data_yahoo = yf.download(ticker, start=start_date, end=end_date)
-        if not data_yahoo.empty:  
-            return data_yahoo
-        else:
-            st.warning("No se han descargado datos para {} en el rango de fechas especificado.".format(ticker))
-            return None
-    except Exception as e:  
-        st.error("Error al descargar datos para {}: {}".format(ticker, e))
-        return None
-
-data_yahoo = download_data(ticker)
-if data_yahoo is not None:
-    cierre_ajustado = data_yahoo['Close'].iloc[0]
+try:
+    data_yahoo = yf.download(ticker, start=start_date, end=end_date)
+    if not data_yahoo.empty:  
+        cierre_ajustado = data_yahoo['Close'].iloc[0]  
+    else:
+        st.warning("No se han descargado datos para {} en el rango de fechas especificado.".format(ticker))
+except Exception as e:  
+    st.error("Error al descargar datos para {}: {}".format(ticker, e))
 
 # Read Data from Excel
 nombre_archivo_excel = 'futuros litio.xlsx'
 
 # Función para obtener tipo de cambio de USD a CNY desde Yahoo Finance
 def obtener_tipo_cambio(ticker):
-    data_yahoo = download_data(ticker)
-    if data_yahoo is not None:
-        return round(data_yahoo['Close'].iloc[0], 2)
-    return None
+    try:
+        data_yahoo = yf.download(ticker, start=start_date, end=end_date)
+        if not data_yahoo.empty:  
+            return round(data_yahoo['Close'].iloc[0], 2)  
+        else:
+            st.warning("No se han descargado datos para {} en el rango de fechas especificado.".format(ticker))
+            return None
+    except Exception as e:  
+        st.error("Error al descargar datos para {}: {}".format(ticker, e))
+        return None
 
 if option == 'Litio y Minerales de Litio':  
     df_market = pd.read_excel(nombre_archivo_excel, sheet_name='Market')
@@ -91,14 +90,15 @@ if option == 'Litio y Minerales de Litio':
 
     # Column Name Cleaning
     nombres_columnas_originales = ['Industrial\n Grade', 'SMM\n LC Idx', 'Battery \nGrade', 'Lithium \nHydroxide BG',
-                                    'Lithium Hydroxide Idx', 'Lithium Hydroxide \nBG Fine', 'Lithium Carbonate\n CIF China',
-                                    'Lithium Hydroxide\n CIF China', 'Lithium \nHexafluorophosphate', 'Lithium \nFluoride BG',
-                                    'Lithium\n Hydroxide IG', 'Spodumene \nConcentrate IDX\nCIF China', 'Spodumene Domestic\n China 5%',
-                                    'Spodumene \nDomestic China 4%', 'Spodumene \nDometic China 3%', 'Spodumene\n1,2%',
-                                    'Spodumene\n2%', 'Spodumene\n3%', 'Lepidolite \n1,5%', 'Lepidolite \n2%', 'Montebrasite \n6%',
-                                    'Montebrasite \n7%', 'AUS Spodumene 6% Spot cif China', 'BRL Spodumene 6% Spot CIF China']
+                                  'Lithium Hydroxide Idx', 'Lithium Hydroxide \nBG Fine', 'Lithium Carbonate\n CIF China',
+                                  'Lithium Hydroxide\n CIF China', 'Lithium \nHexafluorophosphate', 'Lithium \nFluoride BG',
+                                  'Lithium\n Hydroxide IG', 'Spodumene \nConcentrate IDX\nCIF China', 'Spodumene Domestic\n China 5%',
+                                  'Spodumene \nDomestic China 4%', 'Spodumene \nDometic China 3%', 'Spodumene\n1,2%',
+                                  'Spodumene\n2%', 'Spodumene\n3%', 'Lepidolite \n1,5%', 'Lepidolite \n2%', 'Montebrasite \n6%',
+                                  'Montebrasite \n7%', 'AUS Spodumene 6% Spot cif China', 'BRL Spodumene 6% Spot CIF China']
 
     nombres_columnas_actualizados = [nombre.replace('/', '').replace('\n', '') for nombre in nombres_columnas_originales]
+
     df_market.columns = nombres_columnas_actualizados
 
     # Column Removal
@@ -106,6 +106,7 @@ if option == 'Litio y Minerales de Litio':
                           'Lithium Fluoride BG', 'Spodumene Domestic China 4%', 'Spodumene Dometic China 3%',
                           'Spodumene1,2%', 'Spodumene2%', 'Spodumene3%', 'Lepidolite 1,5%', 'Lepidolite 2%',
                           'Montebrasite 6%', 'Montebrasite 7%']
+
     df_market = df_market.drop(columns=columnas_a_eliminar)
 
     # Convertir el índice a objetos de fecha y luego formatear las fechas
@@ -158,93 +159,143 @@ if option == 'Litio y Minerales de Litio':
         df_market_selected = df_market[selected_prices].reset_index()
         df_market_selected_long = pd.melt(df_market_selected, id_vars=['Fecha'], value_vars=selected_prices)
         fig = px.line(df_market_selected_long, x='Fecha', y='value', color='variable', labels={'Fecha': 'Fecha', 'value': 'Precio (USD/mt)', 'variable': 'Precio de Contrato'})
-        fig.update_layout(title="Precios de Contrato a lo largo del Tiempo", xaxis_title="Fecha", yaxis_title="Precio (USD/mt)", legend_title="Precio de Contrato", width=1600, height=800)
-        st.plotly_chart(fig, use_container_width=True)
+        fig.update_layout(title="Precios de Contrato a lo largo del Tiempo", xaxis_title="Fecha", yaxis_title="Precio (USD/mt)", legend_title="Precio de Contrato", width=1600, height=600) 
+        fig.update_traces(hovertemplate='%{x}<br>%{y}')
+        st.plotly_chart(fig, use_container_width=False, config={'displayModeBar': True, 'scrollZoom': False})
+    else:
+        st.warning("Por favor selecciona al menos un precio de contrato.")
 
-elif option == 'Contrato Futuro 2407':
+elif option == 'Contrato Futuro 2407':  
+    # Read Data from Excel
     df_lc2407 = pd.read_excel(nombre_archivo_excel, sheet_name='Contrato 2407')
-    df_lc2407.rename(columns={'Date': 'Fecha'}, inplace=True)
-    df_lc2407.set_index('Fecha', inplace=True)
 
-    # Convertir el índice a objetos de fecha y luego formatear las fechas
+    # Data Cleaning and Transformation
+    df_lc2407.set_index('Date', inplace=True)
     df_lc2407.index = pd.to_datetime(df_lc2407.index).strftime('%d/%m/%y')
 
-    # Reemplazar los valores NaN por 0
-    df_lc2407 = df_lc2407.fillna(0)
+    # Convertir las columnas 'Var%' y 'O.I%' a formato de porcentaje
+    df_lc2407['Var %'] = df_lc2407['Var %'] * 100
+    df_lc2407['O.I %'] = df_lc2407['O.I %'] * 100
 
-    # Calcular las variaciones porcentuales entre el último y penúltimo dato
-    variacion_porcentual_2407 = (df_lc2407.diff().iloc[-1] / df_lc2407.iloc[-2]) * 100
+    # Obtener tipo de cambio de USD a CNY desde Yahoo Finance
+    tipo_cambio_USD_CNY = obtener_tipo_cambio('USDCNY=X')
+
+ 
+    # Aplicar el tipo de cambio a las columnas necesarias
+    if tipo_cambio_USD_CNY is not None:
+        columns_to_convert = ['Latest', 'Prev.Close','Prev.Settle', 'Open']
+        for column in columns_to_convert:
+            df_lc2407[column] /= tipo_cambio_USD_CNY
 
     # Mostrar DataFrame actualizado
     st.markdown("## Contrato Futuro 2407:")  
     st.dataframe(df_lc2407)
 
-    # Mostrar tabla de variaciones porcentuales de forma horizontal con el símbolo de porcentaje
-    st.markdown("## Variaciones Porcentuales:")
-    st.dataframe(variacion_porcentual_2407.to_frame(name='Variaciones Porcentuales').transpose().style.format("{:.2f}%"))
+    # Create a subplot for price and volume
+    fig_lc2407 = make_subplots(rows=2, cols=1, shared_xaxes=True,
+                               vertical_spacing=0.15, subplot_titles=("Price", ""))  
 
-    # Graficar los precios del contrato
-    st.markdown("## Gráfica del Contrato Futuro 2407")
-    fig_2407 = go.Figure()
-    fig_2407.add_trace(go.Scatter(x=df_lc2407.index, y=df_lc2407['Close'], mode='lines', name='Precio de Cierre'))
-    fig_2407.update_layout(title='Evolución del Precio del Contrato Futuro 2407', xaxis_title='Fecha', yaxis_title='Precio (USD)', width=1600, height=800)
-    st.plotly_chart(fig_2407, use_container_width=True)
+    # Add trace for price
+    fig_lc2407.add_trace(go.Scatter(x=df_lc2407.index, y=df_lc2407['Latest'], mode='lines', name='Price'), row=1, col=1)
+    fig_lc2407.update_yaxes(title_text="Price (USD/mt)", row=1, col=1)  
 
-elif option == 'Contrato Futuro 2501':
+    # Add trace for volume
+    colors_volume = ['red' if df_lc2407['Volume'].diff().iloc[i] < 0 else 'green' for i in range(len(df_lc2407))]
+    fig_lc2407.add_trace(go.Bar(x=df_lc2407.index, y=df_lc2407['Volume'], name='Volume', marker_color=colors_volume), row=2, col=1)
+    fig_lc2407.update_yaxes(title_text="Volume", row=2, col=1)
+    fig_lc2407.update_xaxes(title_text="Date", row=2, col=1)  # Move x-axis title to volume plot
+
+    # Update layout
+    fig_lc2407.update_layout(title="Data for Future Contract 2407",
+                             width=1200, height=600)  
+
+    # Show the plot
+    st.plotly_chart(fig_lc2407, use_container_width=False, config={'displayModeBar': True, 'scrollZoom': False})
+
+elif option == 'Contrato Futuro 2501':  
+    # Read Data from Excel for Contract 2501
     df_lc2501 = pd.read_excel(nombre_archivo_excel, sheet_name='Contrato 2501')
-    df_lc2501.rename(columns={'Date': 'Fecha'}, inplace=True)
-    df_lc2501.set_index('Fecha', inplace=True)
 
-    # Convertir el índice a objetos de fecha y luego formatear las fechas
+    # Data Cleaning and Transformation for Contract 2501
+    df_lc2501.set_index('Date', inplace=True)
     df_lc2501.index = pd.to_datetime(df_lc2501.index).strftime('%d/%m/%y')
 
-    # Reemplazar los valores NaN por 0
-    df_lc2501 = df_lc2501.fillna(0)
+    # Convertir las columnas 'Var%' y 'O.I%' a formato de porcentaje
+    df_lc2501['Var %'] = df_lc2501['Var %'] * 100
+    df_lc2501['O.I %'] = df_lc2501['O.I %'] * 100
 
-    # Calcular las variaciones porcentuales entre el último y penúltimo dato
-    variacion_porcentual_2501 = (df_lc2501.diff().iloc[-1] / df_lc2501.iloc[-2]) * 100
+    # Obtener tipo de cambio de USD a CNY desde Yahoo Finance
+    tipo_cambio_USD_CNY = obtener_tipo_cambio('USDCNY=X')
 
-    # Mostrar DataFrame actualizado
-    st.markdown("## Contrato Futuro 2501:")  
+    # Aplicar el tipo de cambio a las columnas necesarias
+    if tipo_cambio_USD_CNY is not None:
+        columns_to_convert = ['Latest', 'Prev.Close','Prev.Settle' ,'Open']
+        for column in columns_to_convert:
+            df_lc2501[column] /= tipo_cambio_USD_CNY
+
+    # Mostrar DataFrame actualizado para el Contrato 2501
+    st.markdown("## Contrato Futuro 2501:") 
     st.dataframe(df_lc2501)
 
-    # Mostrar tabla de variaciones porcentuales de forma horizontal con el símbolo de porcentaje
-    st.markdown("## Variaciones Porcentuales:")
-    st.dataframe(variacion_porcentual_2501.to_frame(name='Variaciones Porcentuales').transpose().style.format("{:.2f}%"))
+    # Create a subplot for price and volume for Contract 2501
+    fig_lc2501 = make_subplots(rows=2, cols=1, shared_xaxes=True,
+                               vertical_spacing=0.15, subplot_titles=("Price", ""))
+    fig_lc2501.add_trace(go.Scatter(x=df_lc2501.index, y=df_lc2501['Latest'], mode='lines', name='Price'), row=1, col=1)
+    fig_lc2501.update_yaxes(title_text="Price (USD/mt)", row=1, col=1)  
 
-    # Graficar los precios del contrato
-    st.markdown("## Gráfica del Contrato Futuro 2501")
-    fig_2501 = go.Figure()
-    fig_2501.add_trace(go.Scatter(x=df_lc2501.index, y=df_lc2501['Close'], mode='lines', name='Precio de Cierre'))
-    fig_2501.update_layout(title='Evolución del Precio del Contrato Futuro 2501', xaxis_title='Fecha', yaxis_title='Precio (USD)', width=1600, height=800)
-    st.plotly_chart(fig_2501, use_container_width=True)
+    # Add trace for volume for Contract 2501
+    colors_volume_lc2501 = ['red' if df_lc2501['Volume'].diff().iloc[i] < 0 else 'green' for i in range(len(df_lc2501))]
+    fig_lc2501.add_trace(go.Bar(x=df_lc2501.index, y=df_lc2501['Volume'], name='Volume', marker_color=colors_volume_lc2501), row=2, col=1)
+    fig_lc2501.update_yaxes(title_text="Volume", row=2, col=1)
+    fig_lc2501.update_xaxes(title_text="Date", row=2, col=1)  # Move x-axis title to volume plot
 
-elif option == 'Contrato Futuro 2411':
+    # Update layout for Contract 2501
+    fig_lc2501.update_layout(title="Data for Future Contract 2501",
+                             width=1200, height=600)  
+
+    # Show the plot for Contract 2501
+    st.plotly_chart(fig_lc2501, use_container_width=False, config={'displayModeBar': True, 'scrollZoom': False})
+
+elif option == 'Contrato Futuro 2411':  
+    # Read Data from Excel for Contract 2411
     df_lc2411 = pd.read_excel(nombre_archivo_excel, sheet_name='Contrato 2411')
-    df_lc2411.rename(columns={'Date': 'Fecha'}, inplace=True)
-    df_lc2411.set_index('Fecha', inplace=True)
 
-    # Convertir el índice a objetos de fecha y luego formatear las fechas
+    # Data Cleaning and Transformation for Contract 2411
+    df_lc2411.set_index('Date', inplace=True)
     df_lc2411.index = pd.to_datetime(df_lc2411.index).strftime('%d/%m/%y')
 
-    # Reemplazar los valores NaN por 0
-    df_lc2411 = df_lc2411.fillna(0)
+    # Convertir las columnas 'Var%' y 'O.I%' a formato de porcentaje
+    df_lc2411['Var %'] = df_lc2411['Var %'] * 100
+    df_lc2411['O.I %'] = df_lc2411['O.I %'] * 100
 
-    # Calcular las variaciones porcentuales entre el último y penúltimo dato
-    variacion_porcentual_2411 = (df_lc2411.diff().iloc[-1] / df_lc2411.iloc[-2]) * 100
+    # Obtener tipo de cambio de USD a CNY desde Yahoo Finance
+    tipo_cambio_USD_CNY = obtener_tipo_cambio('USDCNY=X')
 
-    # Mostrar DataFrame actualizado
-    st.markdown("## Contrato Futuro 2411:")  
+    # Aplicar el tipo de cambio a las columnas necesarias
+    if tipo_cambio_USD_CNY is not None:
+        columns_to_convert = ['Latest', 'Prev.Close','Prev.Settle' ,'Open']
+        for column in columns_to_convert:
+            df_lc2411[column] /= tipo_cambio_USD_CNY
+
+    # Mostrar DataFrame actualizado para el Contrato 2411
+    st.markdown("## Contrato Futuro 2411:") 
     st.dataframe(df_lc2411)
 
-    # Mostrar tabla de variaciones porcentuales de forma horizontal con el símbolo de porcentaje
-    st.markdown("## Variaciones Porcentuales:")
-    st.dataframe(variacion_porcentual_2411.to_frame(name='Variaciones Porcentuales').transpose().style.format("{:.2f}%"))
+    # Create a subplot for price and volume for Contract 2411
+    fig_lc2411 = make_subplots(rows=2, cols=1, shared_xaxes=True,
+                               vertical_spacing=0.15, subplot_titles=("Price", ""))
+    fig_lc2411.add_trace(go.Scatter(x=df_lc2411.index, y=df_lc2411['Latest'], mode='lines', name='Price'), row=1, col=1)
+    fig_lc2411.update_yaxes(title_text="Price (USD/mt)", row=1, col=1)  
 
-    # Graficar los precios del contrato
-    st.markdown("## Gráfica del Contrato Futuro 2411")
-    fig_2411 = go.Figure()
-    fig_2411.add_trace(go.Scatter(x=df_lc2411.index, y=df_lc2411['Close'], mode='lines', name='Precio de Cierre'))
-    fig_2411.update_layout(title='Evolución del Precio del Contrato Futuro 2411', xaxis_title='Fecha', yaxis_title='Precio (USD)', width=1600, height=800)
-    st.plotly_chart(fig_2411, use_container_width=True)
+    # Add trace for volume for Contract 2411
+    colors_volume_lc2411 = ['red' if df_lc2411['Volume'].diff().iloc[i] < 0 else 'green' for i in range(len(df_lc2411))]
+    fig_lc2411.add_trace(go.Bar(x=df_lc2411.index, y=df_lc2411['Volume'], name='Volume', marker_color=colors_volume_lc2411), row=2, col=1)
+    fig_lc2411.update_yaxes(title_text="Volume", row=2, col=1)
+    fig_lc2411.update_xaxes(title_text="Date", row=2, col=1)  # Move x-axis title to volume plot
 
+    # Update layout for Contract 2411
+    fig_lc2411.update_layout(title="Data for Future Contract 2411",
+                             width=1200, height=600)  
+
+    # Show the plot for Contract 2411
+    st.plotly_chart(fig_lc2411, use_container_width=False, config={'displayModeBar': True, 'scrollZoom': False})
