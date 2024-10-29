@@ -231,7 +231,7 @@ elif option == 'Contrato Futuro 2501':
     if tipo_cambio_USD_CNY is not None:
         columns_to_convert = ['Latest', 'Prev.Close','Prev.Settle' ,'Open']
         for column in columns_to_convert:
-            df_lc2501[column] / tipo_cambio_USD_CNY
+            df_lc2501[column] /= tipo_cambio_USD_CNY
 
     # Mostrar DataFrame actualizado para el Contrato 2501
     st.markdown("## Contrato Futuro 2501:") 
