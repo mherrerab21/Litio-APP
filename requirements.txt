@@ -1,7 +1,7 @@
-yfinance
+streamlit
 pandas
 plotly
 matplotlib
 openpyxl
-datetime
+yfinance==0.2.32
 Pillow==9.2.0
