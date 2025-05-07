@@ -1,4 +1,3 @@
-pip install yfinance==0.2.32
 
 # Mejorado para eficiencia, legibilidad y modularidad
 import streamlit as st
