@@ -53,7 +53,7 @@ st.markdown(
 # Download Yahoo Finance Data (improved error handling)
 ticker = 'CNY=X' 
 today = datetime.today()
-start_date = today - timedelta(days=7)  
+start_date = today - timedelta(days=1)  
 end_date = today
 
 try:
