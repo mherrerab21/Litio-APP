@@ -18,7 +18,7 @@ st.sidebar.title("Dashboard de Litio y Contrato 2407")
 
 option = st.sidebar.selectbox(
     'Seleccione una opción',
-    ('Litio y Minerales de Litio', 'Contrato Futuro 2407', 'Contrato Futuro 2501', 'Contrato Futuro 2511')
+    ('Litio y Minerales de Litio', 'Contrato Futuro 2507', 'Contrato Futuro 2509', 'Contrato Futuro 2511')
 )
 
 # Estilo CSS
