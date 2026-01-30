@@ -9,7 +9,7 @@ from datetime import datetime, timedelta
 nombre_archivo_excel = 'futuros litio.xlsx'
 ticker_cny = 'USDCNY=X'
 today = datetime.today()
-start_date = today - timedelta(days=7)
+start_date = today - timedelta(days=15)
 end_date = today
 
 # Sidebar
