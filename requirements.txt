@@ -3,5 +3,5 @@ pandas
 plotly
 matplotlib
 openpyxl
-yfinance==0.2.32
-Pillow==9.2.0
+yfinance
+Pillow
