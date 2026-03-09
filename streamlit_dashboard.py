@@ -54,7 +54,7 @@ def obtener_tipo_cambio(ticker):
 
 tipo_cambio_USD_CNY = obtener_tipo_cambio(ticker_cny)
 if tipo_cambio_USD_CNY is None:
-    tipo_cambio_USD_CNY = 7.2
+    tipo_cambio_USD_CNY = 6.9
     st.info("⚠️ Usando tipo de cambio de respaldo: 7.2 USD/CNY debido a un error en la descarga.")
 
 ##################### OPCIÓN 1: Litio ##########################
